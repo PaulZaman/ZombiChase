@@ -3,4 +3,3 @@ from Menu import Menu
 
 window = Window(800, 600)
 menu = Menu(window)
-
