@@ -1,5 +1,6 @@
 import pygame
-from Player import Player
+from sprites.Player import Player
+from sprites.Weapon import Weapon
 
 class Game:
     def __init__(self, window):
@@ -9,7 +10,8 @@ class Game:
         self.run()
 
     def create_sprites(self):
-        self.player = Player(100, 100)
+        self.player = Player(100, 100, 3)
+        self.player.weapon = Weapon(self.player, 1, 1000, 20, (255, 0, 0))
         self.sprites.add(self.player)
 
     def run(self):
