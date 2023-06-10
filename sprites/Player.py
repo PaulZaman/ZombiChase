@@ -1,21 +1,28 @@
 import pygame as pg
 from settings import *
+from sprites.Weapon import Weapon
 import os
 import re
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, x, y, life):
+    def __init__(self, game, x, y, life, weaponName):
         pg.sprite.Sprite.__init__(self)
         
-        # Create image
-        self.init_images()
-        
         # player variables
-        self.speed = 5
         self.pos = pg.math.Vector2(x, y)
-        self.mouvement = pg.math.Vector2(0, 0)
+        self.vel = pg.math.Vector2(0, 0)
+        self.acc = pg.math.Vector2(0, 0)
+        self.speed = 0.5
+        self.friction = 0.1
         self.weapon = None
         self.life = life
+        self.weaponName = weaponName
+
+        # Create image
+        self.init_images()
+
+        # Create weapon
+        self.weapon = Weapon(self, (255, 0, 0), self.weaponName)
         
         # Animation variables
         self.idle_frame_index = 0
@@ -28,7 +35,7 @@ class Player(pg.sprite.Sprite):
         self.rect.topleft = (x, y)
 
     def init_images(self):
-            idlepath = IMAGE_DIR + "/Top_Down_Survivor/handgun/idle"
+            idlepath = IMAGE_DIR + "/Top_Down_Survivor/"+self.weaponName+"/idle"
             # create list to hold images
             self.idle_images = []
             file_names = os.listdir(idlepath)
@@ -43,46 +50,72 @@ class Player(pg.sprite.Sprite):
                 self.idle_images.append(image)
 
     def update(self):
-        keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT]:
-            self.rect.x -= self.speed
-        if keys[pg.K_RIGHT]:
-            self.rect.x += self.speed
-        if keys[pg.K_UP]:
-            self.rect.y -= self.speed
-        if keys[pg.K_DOWN]:
-            self.rect.y += self.speed
+        self.handle_input()
+        self.apply_friction()
+        self.update_position()
+        self.animate()
+        self.update_weapon()
 
+    def handle_input(self):
+        keys = pg.key.get_pressed()
+        self.acc = pg.math.Vector2(0, 0)
+        if keys[pg.K_LEFT] or keys[pg.K_q]:
+            self.acc.x = -self.speed
+        if keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.acc.x = self.speed
+        if keys[pg.K_UP] or keys[pg.K_z]:
+            self.acc.y = -self.speed
+        if keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.acc.y = self.speed
+        
         # Shoot
-        if pg.mouse.get_pressed()[0]:
+        if pg.mouse.get_pressed()[0] or keys[pg.K_SPACE]:
             self.weapon.shoot()
 
-        # Update animation
-        self.animate()
 
-        # Update weapon
+
+    def apply_friction(self):
+        self.acc += self.vel * -self.friction
+
+    def update_position(self):
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+    
+    def update_weapon(self):
         if self.weapon:
             self.weapon.update()
 
+
     def animate(self):
-      current_time = pg.time.get_ticks()
+        current_time = pg.time.get_ticks()
 
-      if current_time - self.idle_last_update > self.idle_animation_delay:
-          self.idle_frame_index = (self.idle_frame_index + 1) % len(self.idle_images)
-          self.image = self.idle_images[self.idle_frame_index]
-          self.idle_last_update = current_time
+        if current_time - self.idle_last_update > self.idle_animation_delay:
+            self.idle_frame_index = (self.idle_frame_index + 1) % len(self.idle_images)
+            self.image = self.idle_images[self.idle_frame_index]
+            self.idle_last_update = current_time
 
-      # Rotate the image to point at the mouse cursor
-      mouse_pos = pg.mouse.get_pos()
-      direction = pg.math.Vector2(mouse_pos[0] - self.rect.centerx, mouse_pos[1] - self.rect.centery)
-      self.angle = direction.angle_to(pg.math.Vector2(1, 0))  # Calculate the angle between the direction vector and (1, 0) vector
-      
+        # Rotate the image to point at the mouse cursor
+        mouse_pos = pg.mouse.get_pos()
+        direction = pg.math.Vector2(mouse_pos[0] - self.rect.centerx, mouse_pos[1] - self.rect.centery)
+        self.angle = direction.angle_to(pg.math.Vector2(1, 0))  # Calculate the angle between the direction vector and (1, 0) vector
+        
 
-      # Rotate the image and update the rect
-      self.image = pg.transform.rotate(self.idle_images[self.idle_frame_index], self.angle)
-      self.rect = self.image.get_rect(center=self.rect.center)
+        # Rotate the image and update the rect
+        self.image = pg.transform.rotate(self.idle_images[self.idle_frame_index], self.angle)
+        # set the center of the rotated image to the old center
+        self.rect = self.image.get_rect(center=self.rect.center)
+
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         if self.weapon:
             self.weapon.draw(screen)
+        # draw life
+        self.draw_life(screen)
+
+    def draw_life(self, screen):
+        # draw life bar
+        pg.draw.rect(screen, (255, 0, 0), (self.rect.centerx - 50, self.rect.centery - 60, 100, 10))
+        pg.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 60, self.life, 10))
+
+

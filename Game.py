@@ -1,17 +1,18 @@
 import pygame
 from sprites.Player import Player
-from sprites.Weapon import Weapon
+from maps.Map import Map
 
 class Game:
     def __init__(self, window):
         self.screen = window.screen
         self.sprites = pygame.sprite.Group()
+        self.map = Map(100, 100, self)
         self.create_sprites()
         self.run()
 
+
     def create_sprites(self):
-        self.player = Player(100, 100, 3)
-        self.player.weapon = Weapon(self.player, 1, 1000, 20, (255, 0, 0))
+        self.player = Player(self, 350, 250, 100, "shotgun")
         self.sprites.add(self.player)
 
     def run(self):
@@ -32,7 +33,7 @@ class Game:
 
             
             # FPS
-            clock.tick(60)
+            clock.tick(80)
             pygame.display.flip()  # Update the display
 
         pygame.quit()
@@ -44,6 +45,10 @@ class Game:
         for sprite in self.sprites:
             sprite.update()
 
+        self.map.update()
+
     def draw(self):
+        self.map.draw(self.screen)
         for sprite in self.sprites:
             sprite.draw(self.screen)
+        
