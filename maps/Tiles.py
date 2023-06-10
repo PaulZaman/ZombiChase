@@ -12,6 +12,8 @@ class Tile(pg.sprite.Sprite):
 		self.type = type
 		self.pos = pg.math.Vector2(x, y)
 		self.map = map
+		self.x = x/32
+		self.y = y/32
 
 		# create image
 		self.images_dir = IMAGE_DIR + "/jawbreaker/"
@@ -23,8 +25,10 @@ class Tile(pg.sprite.Sprite):
 		
 	def choose_image(self):
 		if self.type == "grass":
-			# randomize int between 1 and 4
-			rand = random.randint(1, 4)
+			# randomize int between 1 and 4, give more weight to 1
+			choices = [1, 2, 3, 4, 5]
+			weights = [0.6, 0.1, 0.1, 0.195, 0.005]
+			rand = random.choices(choices, weights)[0]
 			image = pg.image.load(self.images_dir + "/outside/grass" + str(rand) + ".png")
 		elif self.type == "wall-br":
 			image = pg.image.load(self.images_dir + "/walls/wall_br.png")
@@ -42,6 +46,19 @@ class Tile(pg.sprite.Sprite):
 			image = pg.image.load(self.images_dir + "/walls/wall_v.png")
 		elif self.type == "inside":
 			image = pg.image.load(self.images_dir + "/inside/floor" + str(random.randint(1, 2)) + ".png")
+			# radomize rotation of image
+			rand = random.randint(0, 2)
+			image = pg.transform.rotate(image, rand * 180)
+		elif self.type == "wall-c-hl":
+			image = pg.image.load(self.images_dir + "/walls/wall-c-hr.png")
+			image = pg.transform.flip(image, True, False)
+		elif self.type == "wall-c-hr":
+			image = pg.image.load(self.images_dir + "/walls/wall-c-hr.png")
+		elif self.type == "wall-c-vt":
+			image = pg.image.load(self.images_dir + "/walls/wall-c-vb.png")
+			image = pg.transform.flip(image, False, True)
+		elif self.type == "wall-c-vb":
+			image = pg.image.load(self.images_dir + "/walls/wall-c-vb.png")
 
 		return image
 

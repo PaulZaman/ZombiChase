@@ -2,7 +2,7 @@ import pygame as pg
 from maps.Tiles import Tile
 from settings import *
 import random
-
+from maps.Room import Room
 class Map:
     def __init__(self, w, h, game):
         self.game = game
@@ -12,6 +12,85 @@ class Map:
         self.create_tiles()
 
     def create_tiles(self):
+        self.tiles = pg.sprite.Group()
+        self.rooms = []
+
+        # Create the exterior border of walls
+        self.create_map_border()
+
+        # Number of rooms to generate
+        rooms = self.w * self.h // 200
+
+        for _ in range(rooms):
+            self.generate_room()
+        
+        # Create floor
+        self.create_floor()
+
+    def generate_room(self):
+        # Randomly generate room size
+        room_w = random.randint(6, 15)
+        room_h = random.randint(6, 15)
+
+        # Randomly generate room position
+        room_x = random.randint(3, self.w - room_w - 3)
+        room_y = random.randint(3, self.h - room_h - 3)
+
+         # Check if room overlaps with other rooms with 2-tile spacing
+        for room in self.rooms:
+            if (
+                room_x <= room.x + room.w + 2
+                and room_x + room_w + 2 >= room.x
+                and room_y <= room.y + room.h + 2
+                and room_y + room_h + 2 >= room.y
+            ):
+                return
+            
+        # Create room
+        room = Room(room_x, room_y, room_w, room_h, self)
+
+        # Add room to map
+        self.tiles.add(room.tiles)
+        self.rooms.append(room)
+
+    def create_map_border(self):
+        tiles = []
+        for i in range(self.w):
+            for j in range(self.h):
+                if i == 0 or j == 0 or i == self.w - 1 or j == self.h - 1:
+                    # Create corner walls
+                    if i == 0 and j == 0:
+                        tiles.append(Tile(i * 32, j * 32, "wall-tl", self))
+                    elif i == 0 and j == self.h - 1:
+                        tiles.append(Tile(i * 32, j * 32, "wall-bl", self))
+                    elif i == self.w - 1 and j == 0:
+                        tiles.append(Tile(i * 32, j * 32, "wall-tr", self))
+                    elif i == self.w - 1 and j == self.h - 1:
+                        tiles.append(Tile(i * 32, j * 32, "wall-br", self))
+                    # Create vertical walls
+                    elif i == 0 or i == self.w - 1:
+                        tiles.append(Tile(i * 32, j * 32, "wall-v", self))
+                    # Create horizontal walls
+                    elif j == 0 or j == self.h - 1:
+                        tiles.append(Tile(i * 32, j * 32, "wall-h", self))
+        self.tiles.add(tiles)
+
+    def create_floor(self):
+        # fill all tiles that are empty with floor tiles
+        tiles = []
+        for i in range(self.w):
+            for j in range(self.h):
+                if not self.get_tile(i, j):
+                    tiles.append(Tile(i * 32, j * 32, "grass", self))
+        self.tiles.add(tiles)
+
+    def get_tile(self, x, y):
+        for tile in self.tiles:
+            if tile.x == x and tile.y == y:
+                return True
+        return False
+    
+    def create_tiles2(self):
         self.tiles = pg.sprite.Group()
         tiles_list = []  # Create a list to store tiles for batch addition
 

@@ -6,7 +6,7 @@ class Game:
     def __init__(self, window):
         self.screen = window.screen
         self.sprites = pygame.sprite.Group()
-        self.map = Map(100, 100, self)
+        self.map = Map(60, 60, self)
         self.create_sprites()
         self.run()
 
