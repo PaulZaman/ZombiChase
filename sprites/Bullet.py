@@ -2,7 +2,7 @@ import pygame as pg
 
 
 class Bullet(pg.sprite.Sprite):
-    def __init__(self, x, y, direction, speed):
+    def __init__(self, x, y, direction, speed, zombie_group, walls):
         pg.sprite.Sprite.__init__(self)
 
         # image
@@ -10,7 +10,8 @@ class Bullet(pg.sprite.Sprite):
         self.image.fill((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = x, y
-
+        self.zombie_group = zombie_group
+        self.walls = walls
 
         # movement
         self.direction = direction
@@ -25,9 +26,17 @@ class Bullet(pg.sprite.Sprite):
         self.rect.x += self.direction.x * self.speed
         self.rect.y += self.direction.y * self.speed
 
-        # kill the bullet if it goes off screen
-        if self.rect.x > 800 or self.rect.x < 0 or self.rect.y > 600 or self.rect.y < 0:
-            self.kill()
+        # kill the bullet if it hits a zombie
+        for zombie in self.zombie_group:
+            if pg.sprite.collide_rect(self, zombie):
+                self.kill()
+                zombie.hit()
+        
+        # kill the bullet if it hits a wall
+        for wall in self.walls:
+            if pg.sprite.collide_rect(self, wall):
+                self.kill()
+                
           
 
     def draw(self, screen):

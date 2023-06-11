@@ -14,6 +14,7 @@ class Room:
 
       # tiles in room
       self.tiles = pg.sprite.Group()
+      self.walls = pg.sprite.Group()
 
       # create border walls
       self.create_border()
@@ -36,22 +37,24 @@ class Room:
     # Create floor
     self.create_floor()
 
+    self.tiles.add(self.walls)
+
   def create_horizontal_walls(self, entrance):
     wallrange = self.create_horizontal_entrance(entrance)
     # Create horizontal walls
     for i in range(1, self.w): # top wall
       if entrance=="top":
         if i not in wallrange:
-          self.tiles.add(Tile((self.x + i) * self.tilesize, self.y * self.tilesize, "wall-h", self.map)) 
+          self.walls.add(Tile((self.x + i) * self.tilesize, self.y * self.tilesize, "wall-h", self.map)) 
       else:
-        self.tiles.add(Tile((self.x + i) * self.tilesize, self.y * self.tilesize, "wall-h", self.map))
+        self.walls.add(Tile((self.x + i) * self.tilesize, self.y * self.tilesize, "wall-h", self.map))
     
     for i in range(1, self.w): # bottom wall
       if entrance=="bottom":
         if i not in wallrange:
-          self.tiles.add(Tile((self.x + i) * self.tilesize, (self.y + self.h) * self.tilesize, "wall-h", self.map))
+          self.walls.add(Tile((self.x + i) * self.tilesize, (self.y + self.h) * self.tilesize, "wall-h", self.map))
       else:
-        self.tiles.add(Tile((self.x + i) * self.tilesize, (self.y + self.h) * self.tilesize, "wall-h", self.map))
+        self.walls.add(Tile((self.x + i) * self.tilesize, (self.y + self.h) * self.tilesize, "wall-h", self.map))
 
   def create_vertical_walls(self, entrance):
     wallrange = self.create_vertical_entrance(entrance)
@@ -59,23 +62,23 @@ class Room:
     for i in range(1, self.h): # left wall
       if entrance=="left":
         if i not in wallrange:
-          self.tiles.add(Tile(self.x * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
+          self.walls.add(Tile(self.x * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
       else:
-        self.tiles.add(Tile(self.x * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
+        self.walls.add(Tile(self.x * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
     
     for i in range(1, self.h): # right wall
       if entrance=="right":
         if i not in wallrange:
-          self.tiles.add(Tile((self.x + self.w) * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
+          self.walls.add(Tile((self.x + self.w) * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
       else:
-        self.tiles.add(Tile((self.x + self.w) * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
+        self.walls.add(Tile((self.x + self.w) * self.tilesize, (self.y + i) * self.tilesize, "wall-v", self.map))
       
   def create_corner_walls(self, entrance):
     # Create corner walls
-    self.tiles.add(Tile(self.x * self.tilesize, self.y * self.tilesize, "wall-tl", self.map))
-    self.tiles.add(Tile(self.x * self.tilesize, (self.y + self.h) * self.tilesize, "wall-bl", self.map))
-    self.tiles.add(Tile((self.x + self.w) * self.tilesize, self.y * self.tilesize, "wall-tr", self.map))
-    self.tiles.add(Tile((self.x + self.w) * self.tilesize, (self.y + self.h) * self.tilesize, "wall-br", self.map))
+    self.walls.add(Tile(self.x * self.tilesize, self.y * self.tilesize, "wall-tl", self.map))
+    self.walls.add(Tile(self.x * self.tilesize, (self.y + self.h) * self.tilesize, "wall-bl", self.map))
+    self.walls.add(Tile((self.x + self.w) * self.tilesize, self.y * self.tilesize, "wall-tr", self.map))
+    self.walls.add(Tile((self.x + self.w) * self.tilesize, (self.y + self.h) * self.tilesize, "wall-br", self.map))
 
   def create_horizontal_entrance(self, entrance):
     if entrance == "left" or entrance == "right":
@@ -87,11 +90,11 @@ class Room:
       x = random.randint(self.x + 2, self.x + self.w - 4)
       y = self.y + self.h
    
-    self.tiles.add(Tile((x-1) * self.tilesize, y * self.tilesize, "wall-c-hl", self.map))
+    self.walls.add(Tile((x-1) * self.tilesize, y * self.tilesize, "wall-c-hl", self.map))
     self.tiles.add(Tile(x * self.tilesize, y * self.tilesize, "inside", self.map))
     self.tiles.add(Tile((x+1) * self.tilesize, y * self.tilesize, "inside", self.map))
     self.tiles.add(Tile((x+2) * self.tilesize, y * self.tilesize, "inside", self.map))
-    self.tiles.add(Tile((x+3) * self.tilesize, y * self.tilesize, "wall-c-hr", self.map))
+    self.walls.add(Tile((x+3) * self.tilesize, y * self.tilesize, "wall-c-hr", self.map))
 
     return [
       (x-1)-self.x,
@@ -111,11 +114,11 @@ class Room:
       x = self.x + self.w
       y = random.randint(self.y + 2, self.y + self.h - 4)
 
-    self.tiles.add(Tile(x * self.tilesize, (y-1) * self.tilesize, "wall-c-vt", self.map))
+    self.walls.add(Tile(x * self.tilesize, (y-1) * self.tilesize, "wall-c-vt", self.map))
     self.tiles.add(Tile(x * self.tilesize, y * self.tilesize, "inside", self.map))
     self.tiles.add(Tile(x * self.tilesize, (y+1) * self.tilesize, "inside", self.map))
     self.tiles.add(Tile(x * self.tilesize, (y+2) * self.tilesize, "inside", self.map))
-    self.tiles.add(Tile(x * self.tilesize, (y+3) * self.tilesize, "wall-c-vb", self.map))
+    self.walls.add(Tile(x * self.tilesize, (y+3) * self.tilesize, "wall-c-vb", self.map))
 
     return [
       (y-1)-self.y,

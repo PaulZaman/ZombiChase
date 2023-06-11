@@ -16,7 +16,10 @@ class Player(pg.sprite.Sprite):
         self.friction = 0.1
         self.weapon = None
         self.life = life
+        self.walls = game.map.walls
         self.weaponName = weaponName
+        self.game = game
+    
 
         # Create image
         self.init_images()
@@ -34,6 +37,9 @@ class Player(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
 
+        # collision mask
+        self.collision_rect = pg.Rect(380, 280, 40, 40)
+
     def init_images(self):
             idlepath = IMAGE_DIR + "/Top_Down_Survivor/"+self.weaponName+"/idle"
             # create list to hold images
@@ -45,17 +51,18 @@ class Player(pg.sprite.Sprite):
                 # load image
                 image = pg.image.load(os.path.join(idlepath, file_name)).convert_alpha()
                 # resize image
-                image = pg.transform.scale(image, (100, 100))
+                image = pg.transform.scale(image, (80, 80))
                 # add image to list
                 self.idle_images.append(image)
 
     def update(self):
+        self.old_pos = self.pos.copy()
         self.handle_input()
         self.apply_friction()
         self.update_position()
         self.animate()
         self.update_weapon()
-
+        
     def handle_input(self):
         keys = pg.key.get_pressed()
         self.acc = pg.math.Vector2(0, 0)
@@ -72,19 +79,23 @@ class Player(pg.sprite.Sprite):
         if pg.mouse.get_pressed()[0] or keys[pg.K_SPACE]:
             self.weapon.shoot()
 
-
-
     def apply_friction(self):
         self.acc += self.vel * -self.friction
 
     def update_position(self):
+        hits = pg.sprite.spritecollide(self, self.walls, False)
+        for hit in hits:
+            hit.collide_player(self, self.collision_rect)
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
-    
+
+        # update collision rect
+        mask = pg.mask.from_surface(self.image).centroid()
+        self.collision_rect.center = (self.rect.x + mask[0], self.rect.y + mask[1])
+
     def update_weapon(self):
         if self.weapon:
             self.weapon.update()
-
 
     def animate(self):
         current_time = pg.time.get_ticks()
@@ -105,7 +116,6 @@ class Player(pg.sprite.Sprite):
         # set the center of the rotated image to the old center
         self.rect = self.image.get_rect(center=self.rect.center)
 
-
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         if self.weapon:
@@ -113,9 +123,17 @@ class Player(pg.sprite.Sprite):
         # draw life
         self.draw_life(screen)
 
+        # draw collision rect
+        #pg.draw.rect(screen, (255, 0, 0), self.collision_rect, 2)
+
     def draw_life(self, screen):
         # draw life bar
         pg.draw.rect(screen, (255, 0, 0), (self.rect.centerx - 50, self.rect.centery - 60, 100, 10))
         pg.draw.rect(screen, (0, 255, 0), (self.rect.centerx - 50, self.rect.centery - 60, self.life, 10))
 
-
+    def hit(self, damage):
+        self.life -= damage
+        if self.life <= 0:
+            self.kill()
+        else:
+            self.game.shake_screen()

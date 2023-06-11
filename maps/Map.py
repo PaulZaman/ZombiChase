@@ -12,6 +12,7 @@ class Map:
         self.create_tiles()
 
     def create_tiles(self):
+        self.walls = pg.sprite.Group()
         self.tiles = pg.sprite.Group()
         self.rooms = []
 
@@ -26,6 +27,13 @@ class Map:
         
         # Create floor
         self.create_floor()
+
+        self.create_grid()
+
+    def create_grid(self):
+        self.grid = [[0 for _ in range(self.h)] for _ in range(self.w)]
+        for tile in self.walls:
+            self.grid[int(tile.x)][int(tile.y)] = 1
 
     def generate_room(self):
         # Randomly generate room size
@@ -51,6 +59,7 @@ class Map:
 
         # Add room to map
         self.tiles.add(room.tiles)
+        self.walls.add(room.walls)
         self.rooms.append(room)
 
     def create_map_border(self):
@@ -74,6 +83,7 @@ class Map:
                     elif j == 0 or j == self.h - 1:
                         tiles.append(Tile(i * 32, j * 32, "wall-h", self))
         self.tiles.add(tiles)
+        self.walls.add(tiles)
 
     def create_floor(self):
         # fill all tiles that are empty with floor tiles
@@ -90,7 +100,6 @@ class Map:
                 return True
         return False
     
-    def create_tiles2(self):
         self.tiles = pg.sprite.Group()
         tiles_list = []  # Create a list to store tiles for batch addition
 
@@ -193,5 +202,4 @@ class Map:
     def update(self):
         self.pos = self.game.player.pos
         self.tiles.update()
-
         
