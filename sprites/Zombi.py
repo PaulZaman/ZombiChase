@@ -36,6 +36,7 @@ class Zombie(pg.sprite.Sprite):
         self.load_images()
         self.image = self.idle_images[self.idle_frame_index]
         self.rect = self.image.get_rect()
+        self.update()
 
     def load_images(self):
         idle_dir = IMAGE_DIR + "/zombi/idle"
@@ -102,6 +103,10 @@ class Zombie(pg.sprite.Sprite):
         self.collision_rect.centerx = centroid[0] + self.rect.x
         self.collision_rect.centery = centroid[1] + self.rect.y
 
+        # if zombi is out of bounds, delete it
+        if self.pos.x < 0 or self.pos.x > MAP_WIDTH*TILESIZE or self.pos.y < 0 or self.pos.y > MAP_HEIGHT*TILESIZE:
+            self.kill()
+
     def animate(self):
         now = pg.time.get_ticks()
 
@@ -138,8 +143,7 @@ class Zombie(pg.sprite.Sprite):
         # If the zombie is close enough to the player, stop chasing
         if self.distance < 50:
             self.is_chasing = False
-
-      
+   
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
@@ -158,9 +162,11 @@ class Zombie(pg.sprite.Sprite):
         #pg.draw.rect(screen, RED, self.collision_rect, 1)
 
     def hit(self):
-        self.life -= 1
+        self.life -= self.target.weapon.damage
         if self.life <= 0:
             self.kill()
+            self.target.game.spawn_zombie(self.speed+1, n=2)
+            self.target.score += self.speed
         self.is_chasing = True
 
     def attack(self):

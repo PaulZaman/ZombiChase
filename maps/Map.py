@@ -3,6 +3,7 @@ from maps.Tiles import Tile
 from settings import *
 import random
 from maps.Room import Room
+from sprites.Powerup import Powerup
 class Map:
     def __init__(self, w, h, game):
         self.game = game
@@ -10,6 +11,10 @@ class Map:
         self.h = h
         self.pos = pg.math.Vector2(0, 0)
         self.create_tiles()
+
+        # Create powerups
+        self.powerups = pg.sprite.Group()
+        self.n_powerups = 1
 
     def create_tiles(self):
         self.walls = pg.sprite.Group()
@@ -41,16 +46,16 @@ class Map:
         room_h = random.randint(6, 15)
 
         # Randomly generate room position
-        room_x = random.randint(3, self.w - room_w - 3)
-        room_y = random.randint(3, self.h - room_h - 3)
+        room_x = random.randint(4, self.w - room_w - 4)
+        room_y = random.randint(4, self.h - room_h - 4)
 
          # Check if room overlaps with other rooms with 2-tile spacing
         for room in self.rooms:
             if (
-                room_x <= room.x + room.w + 2
-                and room_x + room_w + 2 >= room.x
-                and room_y <= room.y + room.h + 2
-                and room_y + room_h + 2 >= room.y
+                room_x <= room.x + room.w + 3
+                and room_x + room_w + 3 >= room.x
+                and room_y <= room.y + room.h + 3
+                and room_y + room_h + 3 >= room.y
             ):
                 return
             
@@ -69,19 +74,19 @@ class Map:
                 if i == 0 or j == 0 or i == self.w - 1 or j == self.h - 1:
                     # Create corner walls
                     if i == 0 and j == 0:
-                        tiles.append(Tile(i * 32, j * 32, "wall-tl", self))
+                        tiles.append(Tile(i * TILESIZE, j * TILESIZE, "wall-tl", self))
                     elif i == 0 and j == self.h - 1:
-                        tiles.append(Tile(i * 32, j * 32, "wall-bl", self))
+                        tiles.append(Tile(i * TILESIZE, j * TILESIZE, "wall-bl", self))
                     elif i == self.w - 1 and j == 0:
-                        tiles.append(Tile(i * 32, j * 32, "wall-tr", self))
+                        tiles.append(Tile(i * TILESIZE, j * TILESIZE, "wall-tr", self))
                     elif i == self.w - 1 and j == self.h - 1:
-                        tiles.append(Tile(i * 32, j * 32, "wall-br", self))
+                        tiles.append(Tile(i * TILESIZE, j * TILESIZE, "wall-br", self))
                     # Create vertical walls
                     elif i == 0 or i == self.w - 1:
-                        tiles.append(Tile(i * 32, j * 32, "wall-v", self))
+                        tiles.append(Tile(i * TILESIZE, j * TILESIZE, "wall-v", self))
                     # Create horizontal walls
                     elif j == 0 or j == self.h - 1:
-                        tiles.append(Tile(i * 32, j * 32, "wall-h", self))
+                        tiles.append(Tile(i * TILESIZE, j * TILESIZE, "wall-h", self))
         self.tiles.add(tiles)
         self.walls.add(tiles)
 
@@ -91,7 +96,7 @@ class Map:
         for i in range(self.w):
             for j in range(self.h):
                 if not self.get_tile(i, j):
-                    tiles.append(Tile(i * 32, j * 32, "grass", self))
+                    tiles.append(Tile(i * TILESIZE, j * TILESIZE, "grass", self))
         self.tiles.add(tiles)
 
     def get_tile(self, x, y):
@@ -109,21 +114,21 @@ class Map:
                 if i == 0 or j == 0 or i == self.w - 1 or j == self.h - 1:
                     # Create corner walls
                     if i == 0 and j == 0:
-                        tiles_list.append(Tile(i * 32, j * 32, "wall-tl", self))
+                        tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "wall-tl", self))
                     elif i == 0 and j == self.h - 1:
-                        tiles_list.append(Tile(i * 32, j * 32, "wall-bl", self))
+                        tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "wall-bl", self))
                     elif i == self.w - 1 and j == 0:
-                        tiles_list.append(Tile(i * 32, j * 32, "wall-tr", self))
+                        tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "wall-tr", self))
                     elif i == self.w - 1 and j == self.h - 1:
-                        tiles_list.append(Tile(i * 32, j * 32, "wall-br", self))
+                        tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "wall-br", self))
                     # Create vertical walls
                     elif i == 0 or i == self.w - 1:
-                        tiles_list.append(Tile(i * 32, j * 32, "wall-v", self))
+                        tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "wall-v", self))
                     # Create horizontal walls
                     elif j == 0 or j == self.h - 1:
-                        tiles_list.append(Tile(i * 32, j * 32, "wall-h", self))
+                        tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "wall-h", self))
                 else:
-                    tiles_list.append(Tile(i * 32, j * 32, "grass", self))
+                    tiles_list.append(Tile(i * TILESIZE, j * TILESIZE, "grass", self))
 
         self.tiles.add(tiles_list)  # Add all tiles in a batch
 
@@ -197,9 +202,20 @@ class Map:
                     tile1.kill()
 
     def draw(self, screen):
-        self.tiles.draw(screen)  # Render all tiles in a batch
+        self.tiles.draw(screen)  # Render all tiles in a batch  
+        self.powerups.draw(screen)
 
     def update(self):
         self.pos = self.game.player.pos
         self.tiles.update()
-        
+        self.update_powerups()
+
+    def update_powerups(self):
+        if len(self.powerups) < self.n_powerups:
+            # randomly place the powerups in a random room
+            room = random.choice(self.rooms)
+            x = random.randint((room.x+1) * TILESIZE, (room.x + room.w - 1) * TILESIZE)
+            y = random.randint((room.y+1) * TILESIZE, (room.y + room.h - 1) * TILESIZE)
+            powerup = Powerup(x, y, random.choice(["health", "fire_rate", "bullets", "precision", "damage"]), self)
+            self.powerups.add(powerup)
+        self.powerups.update()

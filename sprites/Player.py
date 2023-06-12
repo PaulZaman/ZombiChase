@@ -3,6 +3,7 @@ from settings import *
 from sprites.Weapon import Weapon
 import os
 import re
+from menu.menufunctions import draw_text
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y, life, weaponName):
@@ -12,13 +13,14 @@ class Player(pg.sprite.Sprite):
         self.pos = pg.math.Vector2(x, y)
         self.vel = pg.math.Vector2(0, 0)
         self.acc = pg.math.Vector2(0, 0)
-        self.speed = 0.5
+        self.speed = 0.7
         self.friction = 0.1
         self.weapon = None
         self.life = life
         self.walls = game.map.walls
         self.weaponName = weaponName
         self.game = game
+        self.score = 0
     
 
         # Create image
@@ -38,10 +40,10 @@ class Player(pg.sprite.Sprite):
         self.rect.topleft = (x, y)
 
         # collision mask
-        self.collision_rect = pg.Rect(380, 280, 40, 40)
+        self.collision_rect = pg.Rect(SCREEN_WIDTH-20, SCREEN_HEIGHT-20, 40, 40)
 
     def init_images(self):
-            idlepath = IMAGE_DIR + "/Top_Down_Survivor/"+self.weaponName+"/idle"
+            idlepath = IMAGE_DIR + "/player/"+self.weaponName+"/idle"
             # create list to hold images
             self.idle_images = []
             file_names = os.listdir(idlepath)
@@ -122,9 +124,48 @@ class Player(pg.sprite.Sprite):
             self.weapon.draw(screen)
         # draw life
         self.draw_life(screen)
+        # draw score
+        self.draw_score(screen) 
+        # draw weapon characteristics
+        self.draw_characteristics(screen)
 
         # draw collision rect
         #pg.draw.rect(screen, (255, 0, 0), self.collision_rect, 2)
+
+    def draw_characteristics(self, screen):
+        # weapon name
+        draw_text(screen, 80, 30, "Weapon : " + self.weaponName, 20, BLACK)
+
+        # weapon fire rate bar (maximum is 100, minimum is 1500)
+        draw_text(screen, 60, 60, "Fire rate : ", 15, BLACK)
+        pg.draw.rect(screen, BLACK, (100, 55, 100, 10))
+        pg.draw.rect(screen, GREEN, (100, 55, 100 - int((self.weapon.fire_rate)/15), 10))
+       
+        # weapon precision bar (max is 0, min is 30)
+        draw_text(screen, 60, 80, "Precision : ", 15, BLACK)
+        pg.draw.rect(screen, BLACK, (100, 75, 100, 10))
+        pg.draw.rect(screen, GREEN, (100, 75, 100 - int((self.weapon.precision)*3.3333), 10))
+
+        # weapon damage 
+        draw_text(screen, 60, 100, "Damage : " + str(self.weapon.damage), 15, BLACK)
+
+        # weapon bullets (max is 10, min is 1)
+        draw_text(screen, 60, 120, "Bullets : " + str(self.weapon.n_bullets), 15, BLACK)
+
+        # draw time survived
+        draw_text(screen, SCREEN_WIDTH/2, 30, "Time survived : ", 20, BLACK)
+        draw_text(screen, SCREEN_WIDTH/2, 60, str(int(self.game.time_survived/1000)) + "s", 20, BLACK)
+
+        
+        
+
+
+        
+
+
+        
+    def draw_score(self, screen):
+        draw_text(screen, 700, 30, "Score : " + str(self.score), 30, RED)
 
     def draw_life(self, screen):
         # draw life bar

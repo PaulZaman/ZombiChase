@@ -1,7 +1,7 @@
 import pygame as pg
 from maps.Tiles import Tile
 import random
-
+from sprites.Powerup import Powerup
 
 class Room:
   def __init__(self, x, y, w, h, map, tilesize=32):
@@ -83,18 +83,35 @@ class Room:
   def create_horizontal_entrance(self, entrance):
     if entrance == "left" or entrance == "right":
       return None
+    
     if entrance == "top":
       x = random.randint(self.x + 2, self.x + self.w - 4)
       y = self.y
+      for i in range(3):
+        self.tiles.add(Tile((x+i) * self.tilesize, (y-1) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 1) == 0:
+          self.tiles.add(Tile((x+i) * self.tilesize, (y-2) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 3) == 0:
+          self.tiles.add(Tile((x+i) * self.tilesize, (y-3) * self.tilesize, "grass-5", self.map))
+
     if entrance == "bottom":
       x = random.randint(self.x + 2, self.x + self.w - 4)
       y = self.y + self.h
+      for i in range(3):
+        self.tiles.add(Tile((x+i) * self.tilesize, (y+1) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 1) == 0:
+          self.tiles.add(Tile((x+i) * self.tilesize, (y+2) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 3) == 0:
+          self.tiles.add(Tile((x+i) * self.tilesize, (y+3) * self.tilesize, "grass-5", self.map))
+
    
     self.walls.add(Tile((x-1) * self.tilesize, y * self.tilesize, "wall-c-hl", self.map))
     self.tiles.add(Tile(x * self.tilesize, y * self.tilesize, "inside", self.map))
     self.tiles.add(Tile((x+1) * self.tilesize, y * self.tilesize, "inside", self.map))
     self.tiles.add(Tile((x+2) * self.tilesize, y * self.tilesize, "inside", self.map))
     self.walls.add(Tile((x+3) * self.tilesize, y * self.tilesize, "wall-c-hr", self.map))
+
+    
 
     return [
       (x-1)-self.x,
@@ -110,9 +127,21 @@ class Room:
     if entrance == "left":
       x = self.x
       y = random.randint(self.y + 2, self.y + self.h - 4)
+      for i in range(3):
+        self.tiles.add(Tile((x-1) * self.tilesize, (y+i) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 1) == 0:
+          self.tiles.add(Tile((x-2) * self.tilesize, (y+i) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 3) == 0:
+          self.tiles.add(Tile((x-3) * self.tilesize, (y+i) * self.tilesize, "grass-5", self.map))
     if entrance == "right":
       x = self.x + self.w
       y = random.randint(self.y + 2, self.y + self.h - 4)
+      for i in range(3):
+        self.tiles.add(Tile((x+1) * self.tilesize, (y+i) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 1) == 0:
+          self.tiles.add(Tile((x+2) * self.tilesize, (y+i) * self.tilesize, "grass-5", self.map))
+        if random.randint(0, 3) == 0:
+          self.tiles.add(Tile((x+3) * self.tilesize, (y+i) * self.tilesize, "grass-5", self.map))
 
     self.walls.add(Tile(x * self.tilesize, (y-1) * self.tilesize, "wall-c-vt", self.map))
     self.tiles.add(Tile(x * self.tilesize, y * self.tilesize, "inside", self.map))

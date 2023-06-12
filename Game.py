@@ -3,13 +3,15 @@ from sprites.Player import Player
 from maps.Map import Map
 from sprites.Zombi import Zombie
 import random
+from settings import *
 
 class Game:
     def __init__(self, window):
         self.screen = window.screen
         self.sprites = pygame.sprite.Group()
-        self.map = Map(60, 60, self)
-        self.create_sprites()
+        self.map = Map(MAP_WIDTH, MAP_HEIGHT, self)
+        self.create_sprites(n_zombies=10)
+        self.time_survived = 0
         # shaking
         self.shake_start_time = 0
         self.shake_duration = 500
@@ -17,22 +19,13 @@ class Game:
         # run
         self.run()
 
-    def create_sprites(self):
+    def create_sprites(self, n_zombies=12):
         self.player = Player(self, 350, 250, 100, "rifle")
-        self.sprites.add(self.player)
 
         self.zombies = pygame.sprite.Group()
 
-        self.zombi = Zombie(self.player, 350, 250)
-        self.zombies.add(self.zombi)
-        self.sprites.add(self.zombi)
-
-        """for i in range(10):
-            x = random.randint(0, 60*32)
-            y = random.randint(0, 60*32)
-            zombi = Zombie(self.player, x, y)
-            self.zombies.add(zombi)
-            self.sprites.add(zombi)"""
+        self.spawn_zombie(1, n=n_zombies)
+        self.sprites.add(self.player)
 
     def run(self):
         running = True
@@ -52,7 +45,7 @@ class Game:
 
             
             # FPS
-            clock.tick(80)
+            clock.tick(100)
             pygame.display.flip()  # Update the display
 
         pygame.quit()
@@ -61,10 +54,13 @@ class Game:
         pass
 
     def update(self):
+        self.time_survived = pygame.time.get_ticks()
+
         for sprite in self.sprites:
             sprite.update()
 
         self.map.update()
+        
 
         # shaking
         now = pygame.time.get_ticks()
@@ -84,4 +80,12 @@ class Game:
 
     def shake_screen(self):
         self.shake_start_time = pygame.time.get_ticks()
+
+    def spawn_zombie(self, speed, n=1):
+        for _ in range(n):
+            x = random.randint(1*TILESIZE, (MAP_WIDTH-2)*TILESIZE)
+            y = random.randint(1*TILESIZE, (MAP_HEIGHT-2)*TILESIZE)
+            zombi = Zombie(self.player, x, y, speed)
+            self.zombies.add(zombi)
+            self.sprites.add(zombi)
         

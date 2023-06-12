@@ -5,29 +5,33 @@ import random
 
 class Tile(pg.sprite.Sprite):
 	def __init__(self, x, y, type, map):
-		# type is either "grass" or "wall-br", "wall-bl", "wall-tr", "wall-tl", "wall-h", "wall-v", "inside"
+		# type is either "grass" or "wall-br", "wall-bl", "wall-tr", "wall-tl", "wall-h", "wall-v", "inside", "grass-5"
 
 
 		pg.sprite.Sprite.__init__(self)
 		self.type = type
 		self.pos = pg.math.Vector2(x, y)
 		self.map = map
-		self.x = x/32
-		self.y = y/32
+		self.x = x/TILESIZE
+		self.y = y/TILESIZE
 
 		# create image
-		self.images_dir = IMAGE_DIR + "/jawbreaker/"
+		self.images_dir = IMAGE_DIR + "/map_tiles/"
 
 		self.image = self.choose_image()
-		self.image = pg.transform.scale(self.image, (32, 32))
+		self.image = pg.transform.scale(self.image, (TILESIZE, TILESIZE))
 		self.rect = self.image.get_rect()
 		self.rect.topleft = (self.pos.x, self.pos.y)
 		
 	def choose_image(self):
-		if self.type == "grass":
+		if self.type == "grass-5":
+			image = pg.image.load(self.images_dir + "/outside/grass5.png")
+			rand = random.randint(0, 3)
+			image = pg.transform.rotate(image, rand * 90)
+		elif self.type == "grass":
 			# randomize int between 1 and 4, give more weight to 1
 			choices = [1, 2, 3, 4, 5]
-			weights = [0.6, 0.1, 0.1, 0.195, 0.005]
+			weights = [0.6, 0.1, 0.1, 0.199, 0.001]
 			rand = random.choices(choices, weights)[0]
 			image = pg.image.load(self.images_dir + "/outside/grass" + str(rand) + ".png")
 		elif self.type == "wall-br":
@@ -138,6 +142,3 @@ class Tile(pg.sprite.Sprite):
 	def draw(self, screen):
 		# draw collision box
 		screen.blit(self.image, self.rect)
-		
-
-
