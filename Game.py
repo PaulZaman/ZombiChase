@@ -7,11 +7,15 @@ from settings import *
 
 class Game:
     def __init__(self, window, difficulty, weapon_info):
+        self.window = window
         self.screen = window.screen
         self.sprites = pygame.sprite.Group()
         self.map = Map(MAP_WIDTH, MAP_HEIGHT, self)
         self.create_sprites(weapon_info, difficulty)
+        self.difficulty = difficulty
         self.time_survived = 0
+        self.back_to_menu = False
+        self.weapon_info = weapon_info
         # shaking
         self.shake_start_time = 0
         self.shake_duration = 500
@@ -35,6 +39,8 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    pygame.quit()
+                
 
             # color the screen white
             self.screen.fill((255, 255, 255))
@@ -43,12 +49,14 @@ class Game:
             self.update()
             self.draw()
 
+            if self.back_to_menu:
+                running = False
+
             
             # FPS
             clock.tick(100)
             pygame.display.flip()  # Update the display
 
-        pygame.quit()
 
     def events(self):
         pass
@@ -61,7 +69,6 @@ class Game:
 
         self.map.update()
         
-
         # shaking
         now = pygame.time.get_ticks()
         if now - self.shake_start_time < self.shake_duration:
@@ -88,4 +95,53 @@ class Game:
             zombi = Zombie(self.player, x, y, speed)
             self.zombies.add(zombi)
             self.sprites.add(zombi)
-        
+
+    def game_over(self):
+        run = True
+        while run:
+            # color the screen white
+            self.screen.fill(WHITE)
+
+            # Display correct screen
+            self.window.draw_text(self.window.w_tiles/2, 1, "Game Over", 50, BLACK, TILESIZE=32)
+
+
+            if self.window.button(self.window.w_tiles/2, 14, 6, 2, "Back To Menu", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
+                self.back_to_menu = True
+                run = False
+                
+
+            if self.window.button(self.window.w_tiles/2, 17, 6, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
+                self.back_to_menu = True
+                run = False
+
+                ## ici on sauvegarde les résultats, 
+                # pour le nom on envoie un nom au pif et je l'implémenterai plus tard
+                res = {
+                    "name": "test",
+                    "weapon_info": self.weapon_info,
+                    "time_survived": self.time_survived,
+                    "difficulty": self.difficulty,
+                    "n_bullets_shot": self.player.bullets_shot,
+                    "score": self.player.score,
+                    "bullets_missed": self.player.bullets_missed,
+                    "zombies_killed": self.player.zombies_killed,
+                    "powerups_collected": self.player.powerups_collected
+                }
+
+                print(res)
+                
+            # FPS
+            self.window.clock.tick(60)
+            pygame.display.flip()
+
+            # Events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.back_to_menu = True
+                        run = False
+                        

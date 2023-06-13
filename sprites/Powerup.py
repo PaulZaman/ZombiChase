@@ -59,3 +59,4 @@ class Powerup(pg.sprite.Sprite):
             elif self.type == "damage":
                 self.player.weapon.damage += 1
             self.last_upgrade = now
+            self.player.powerups_collected += 1

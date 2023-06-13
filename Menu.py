@@ -28,10 +28,21 @@ class Menu:
         self.h_tiles = self.window.height / TILESIZE
 
         self.main_loop()
-        #self.game = Game(self.window)
+        
+        """weapon = {
+            "name": "handgun",
+            "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/handgun/idle/survivor-idle_handgun_0.png"), (128, 128)), 90),
+            "damage": 1,
+            "fire_rate": 1000,
+            "bullet_speed":20,
+            "n_bullets":1,
+            "precision":15,
+        }
+        self.game = Game(self.window, 2, weapon)"""
+        # example weapon
         
     def init_game_params(self):
-        self.game_difficulty = 2
+        self.game_difficulty = 5
         self.game_weapon = "pistol"
          
     def init_weapons(self):
@@ -154,9 +165,9 @@ class Menu:
             time.sleep(0.1)
 
         if self.window.button(8 + self.w_tiles/2, 15, 5, 2, "Start", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
-            self.screenIsOn = "end_screen"
-            self.results = self.init_game()
-            print(self.results)
+            self.init_game()
+            self.screenIsOn = "main-menu"
+            time.sleep(0.1)
             return
 
     def show_weapons(self):
@@ -176,7 +187,7 @@ class Menu:
             time.sleep(0.1)
 
         # weapon stats
-         # weapon fire rate bar (maximum is 100, minimum is 1500)
+        # weapon fire rate bar (maximum is 100, minimum is 1500)
         self.window.draw_text(self.w_tiles/2 - 2, 12, "Fire rate : ", 15, BLACK, TILESIZE=TILESIZE)
         pg.draw.rect(self.window.screen, BLACK, ((self.w_tiles/2)*TILESIZE, 12*TILESIZE, 4*TILESIZE, 0.5*TILESIZE))
         pg.draw.rect(self.window.screen, GREEN, ((self.w_tiles/2)*TILESIZE, 12*TILESIZE, 4*TILESIZE - int((self.weapons[self.selected_weapon_index]["fire_rate"])/15), 0.5*TILESIZE))

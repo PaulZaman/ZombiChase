@@ -39,6 +39,7 @@ class Weapon():
         if pg.time.get_ticks() - self.last_shot > self.fire_rate:
           for _ in range(int(self.n_bullets)-1):
             self.bullets.add(self.create_bullet(offset=rand.randint(-self.precision, self.precision)))
+            self.player.bullets_shot += 1
           self.bullets.add(self.create_bullet())
           self.last_shot = pg.time.get_ticks()
 
@@ -51,4 +52,4 @@ class Weapon():
         # apply offset to the direction vector
         direction = direction.rotate(offset)
 
-        return Bullet(spawn_pos.x, spawn_pos.y, direction, self.bullet_speed, self.player.game.zombies, self.player.game.map.walls)
+        return Bullet(spawn_pos.x, spawn_pos.y, direction, self.bullet_speed, self.player.game.zombies, self.player.game.map.walls, self.player)

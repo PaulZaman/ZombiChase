@@ -164,6 +164,7 @@ class Zombie(pg.sprite.Sprite):
     def hit(self):
         self.life -= self.target.weapon.damage
         if self.life <= 0:
+            self.target.zombies_killed += 1
             self.kill()
             self.target.game.spawn_zombie(self.speed+1, n=2)
             self.target.score += self.speed

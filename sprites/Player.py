@@ -19,9 +19,13 @@ class Player(pg.sprite.Sprite):
         self.life = life
         self.walls = game.map.walls
         self.game = game
-        self.score = 0
-    
 
+        self.score = 0
+        self.bullets_shot = 0
+        self.bullets_missed = 0
+        self.zombies_killed = 0
+        self.powerups_collected = 0
+    
         # Create image
         self.init_images()
 
@@ -133,29 +137,33 @@ class Player(pg.sprite.Sprite):
 
     def draw_characteristics(self, screen):
         # weapon name
-        draw_text(screen, 80, 30, "Weapon : " + self.weaponName, 20, BLACK)
+        draw_text(screen, 100, 30, "Weapon : " + self.weaponName, 20, BLACK)
+        window = self.game.window
 
         # weapon fire rate bar (maximum is 100, minimum is 1500)
-        draw_text(screen, 60, 60, "Fire rate : ", 15, BLACK)
-        pg.draw.rect(screen, BLACK, (100, 55, 100, 10))
-        pg.draw.rect(screen, GREEN, (100, 55, 100 - int((self.weapon.fire_rate)/15), 10))
-       
+        window.draw_text(1.8, 2, "Fire rate : ", 15, BLACK, TILESIZE=TILESIZE)
+        pg.draw.rect(window.screen, BLACK, (3*TILESIZE, 2*TILESIZE, 4*TILESIZE, 0.5*TILESIZE))
+        pg.draw.rect(window.screen, GREEN, (3*TILESIZE, 2*TILESIZE, 4*TILESIZE - int(self.weapon.fire_rate)/15, 0.5*TILESIZE))
+
         # weapon precision bar (max is 0, min is 30)
-        draw_text(screen, 60, 80, "Precision : ", 15, BLACK)
-        pg.draw.rect(screen, BLACK, (100, 75, 100, 10))
-        pg.draw.rect(screen, GREEN, (100, 75, 100 - int((self.weapon.precision)*3.3333), 10))
+        window.draw_text(1.8, 3, "Precision : ", 15, BLACK, TILESIZE=TILESIZE)
+        pg.draw.rect(window.screen, BLACK, (3*TILESIZE, 3*TILESIZE, 4*TILESIZE, 0.5*TILESIZE))
+        pg.draw.rect(window.screen, GREEN, (3*TILESIZE, 3*TILESIZE, 4*TILESIZE - int(self.weapon.precision*3), 0.5*TILESIZE))
 
-        # weapon damage 
-        draw_text(screen, 60, 100, "Damage : " + str(self.weapon.damage), 15, BLACK)
+        # Bullet speed bar (max is 30, min is 0)
+        window.draw_text(1.6, 4, "Bullet speed : ", 15, BLACK, TILESIZE=TILESIZE)
+        pg.draw.rect(window.screen, BLACK, (3*TILESIZE, 4*TILESIZE, 4*TILESIZE, 0.5*TILESIZE))
+        pg.draw.rect(window.screen, GREEN, (3*TILESIZE, 4*TILESIZE, 4*TILESIZE - int(self.weapon.bullet_speed*10/3), 0.5*TILESIZE))
 
-        # weapon bullets (max is 10, min is 1)
-        draw_text(screen, 60, 120, "Bullets : " + str(self.weapon.n_bullets), 15, BLACK)
+        # weapon damage
+        window.draw_text(1.5, 5, "Damage : " + str(self.weapon.damage), 15, BLACK, TILESIZE=TILESIZE)
+
+        # weapon bullet number
+        window.draw_text(5, 5, "Bullet number : " + str(self.weapon.n_bullets), 15, BLACK, TILESIZE=TILESIZE)        
 
         # draw time survived
         draw_text(screen, SCREEN_WIDTH/2, 30, "Time survived : ", 20, BLACK)
         draw_text(screen, SCREEN_WIDTH/2, 60, str(int(self.game.time_survived/1000)) + "s", 20, BLACK)
-
-
         
     def draw_score(self, screen):
         draw_text(screen, 700, 30, "Score : " + str(self.score), 30, RED)
@@ -169,5 +177,6 @@ class Player(pg.sprite.Sprite):
         self.life -= damage
         if self.life <= 0:
             self.kill()
+            self.game.game_over()
         else:
             self.game.shake_screen()

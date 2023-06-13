@@ -9,6 +9,8 @@ class Window:
         self.width = width
         self.height = height
         self.screen = pg.display.set_mode((self.width, self.height))
+        self.w_tiles = self.width / TILESIZE
+        self.h_tiles = self.height / TILESIZE
         self.clock = pg.time.Clock()
         pg.display.set_caption("ZombiChase")
 
