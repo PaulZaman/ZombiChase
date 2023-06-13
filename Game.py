@@ -6,11 +6,11 @@ import random
 from settings import *
 
 class Game:
-    def __init__(self, window):
+    def __init__(self, window, difficulty, weapon_info):
         self.screen = window.screen
         self.sprites = pygame.sprite.Group()
         self.map = Map(MAP_WIDTH, MAP_HEIGHT, self)
-        self.create_sprites(n_zombies=10)
+        self.create_sprites(weapon_info, difficulty)
         self.time_survived = 0
         # shaking
         self.shake_start_time = 0
@@ -19,12 +19,12 @@ class Game:
         # run
         self.run()
 
-    def create_sprites(self, n_zombies=12):
-        self.player = Player(self, 350, 250, 100, "rifle")
+    def create_sprites(self, weapon_info, difficulty, n_zombies=10):
+        self.player = Player(self, 350, 250, 100, weapon_info)
 
         self.zombies = pygame.sprite.Group()
 
-        self.spawn_zombie(1, n=n_zombies)
+        self.spawn_zombie(difficulty, n=n_zombies)
         self.sprites.add(self.player)
 
     def run(self):

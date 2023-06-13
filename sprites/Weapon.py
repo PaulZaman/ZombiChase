@@ -5,34 +5,21 @@ import random as rand
 
 
 class Weapon():
-    def __init__(self, player, bullet_image, weapon_type):
+    def __init__(self, player, bullet_image, weaponInfo):
         self.player = player
         self.bullets = pg.sprite.Group()
         self.bullet_image = bullet_image
-        self.weapon_type = weapon_type
         self.gun_offset = pg.math.Vector2(35, 20)
-        self.set_weapon_characteristics()
+        self.set_weapon_characteristics(weaponInfo)
         self.last_shot = 0
 
-    def set_weapon_characteristics(self):
-        if self.weapon_type == "rifle":
-            self.damage = 1
-            self.fire_rate = 500
-            self.bullet_speed = 20
-            self.n_bullets = 1
-            self.precision = 10
-        elif self.weapon_type == "shotgun":
-            self.damage = 1
-            self.fire_rate = 1500
-            self.bullet_speed = 10
-            self.n_bullets = 3
-            self.precision = 30
-        elif self.weapon_type == "handgun":
-            self.damage = 3
-            self.fire_rate = 1000
-            self.bullet_speed = 15
-            self.n_bullets = 1
-            self.precision = 15
+    def set_weapon_characteristics(self, weaponInfo):
+        self.weaponName = weaponInfo["name"]
+        self.damage = weaponInfo["damage"]
+        self.fire_rate = weaponInfo["fire_rate"]
+        self.bullet_speed = weaponInfo["bullet_speed"]
+        self.n_bullets = weaponInfo["n_bullets"]
+        self.precision = weaponInfo["precision"]
             
     def print_weapon_characteristics(self):
         print("Weapon: " + self.weapon_type)

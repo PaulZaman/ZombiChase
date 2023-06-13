@@ -6,7 +6,7 @@ import re
 from menu.menufunctions import draw_text
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, game, x, y, life, weaponName):
+    def __init__(self, game, x, y, life, weaponInfo):
         pg.sprite.Sprite.__init__(self)
         
         # player variables
@@ -15,10 +15,9 @@ class Player(pg.sprite.Sprite):
         self.acc = pg.math.Vector2(0, 0)
         self.speed = 0.7
         self.friction = 0.1
-        self.weapon = None
+        self.weaponName = weaponInfo["name"]
         self.life = life
         self.walls = game.map.walls
-        self.weaponName = weaponName
         self.game = game
         self.score = 0
     
@@ -27,7 +26,7 @@ class Player(pg.sprite.Sprite):
         self.init_images()
 
         # Create weapon
-        self.weapon = Weapon(self, (255, 0, 0), self.weaponName)
+        self.weapon = Weapon(self, (255, 0, 0), weaponInfo)
         
         # Animation variables
         self.idle_frame_index = 0
@@ -155,12 +154,6 @@ class Player(pg.sprite.Sprite):
         # draw time survived
         draw_text(screen, SCREEN_WIDTH/2, 30, "Time survived : ", 20, BLACK)
         draw_text(screen, SCREEN_WIDTH/2, 60, str(int(self.game.time_survived/1000)) + "s", 20, BLACK)
-
-        
-        
-
-
-        
 
 
         
