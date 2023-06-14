@@ -23,6 +23,7 @@ class Menu:
     def __init__(self, window):
         self.window = window
         self.screenIsOn = "main-menu"
+        self.fullscreen = False
 
         self.w_tiles = self.window.width / TILESIZE
         self.h_tiles = self.window.height / TILESIZE
@@ -49,7 +50,7 @@ class Menu:
         self.pistol_object = {
             "name": "handgun",
             "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/handgun/idle/survivor-idle_handgun_0.png"), (128, 128)), 90),
-            "damage": 1,
+            "damage": 2,
             "fire_rate": 1000,
             "bullet_speed":20,
             "n_bullets":1,
@@ -159,13 +160,16 @@ class Menu:
         self.window.draw_text(self.w_tiles/2, 5, str(self.game_difficulty), 20, BLACK, TILESIZE=TILESIZE)
         if self.window.draw_arrow(self.w_tiles/2 + 2, 5, 1.5, 1, 0.3, BLACK, "right", 1.2, TILESIZE=TILESIZE):
             self.game_difficulty = min(self.game_difficulty + 1, 10)
-            time.sleep(0.1)
         if self.window.draw_arrow(self.w_tiles/2 - 3.5, 5, 1.5, 1, 0.3, BLACK, "left", 1.2, TILESIZE=TILESIZE):
             self.game_difficulty = max(self.game_difficulty - 1, 1)
-            time.sleep(0.1)
 
         if self.window.button(8 + self.w_tiles/2, 15, 5, 2, "Start", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
             self.init_game()
+            self.screenIsOn = "main-menu"
+            time.sleep(0.1)
+            return
+        
+        if self.window.button(self.w_tiles/2 - 8, 15, 5, 2, "Back", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
             self.screenIsOn = "main-menu"
             time.sleep(0.1)
             return
@@ -181,10 +185,8 @@ class Menu:
         # arrows
         if self.window.draw_arrow(self.w_tiles/2 + 2, 10, 1.5, 1, 0.3, BLACK, "right", 1.2, TILESIZE=TILESIZE):
             self.selected_weapon_index = (self.selected_weapon_index + 1) % len(self.weapons)
-            time.sleep(0.1)
         if self.window.draw_arrow(self.w_tiles/2 - 3.5, 10, 1.5, 1, 0.3, BLACK, "left", 1.2, TILESIZE=TILESIZE):
             self.selected_weapon_index = (self.selected_weapon_index - 1) % len(self.weapons)
-            time.sleep(0.1)
 
         # weapon stats
         # weapon fire rate bar (maximum is 100, minimum is 1500)
@@ -208,6 +210,23 @@ class Menu:
         # weapon bullets (max is 10, min is 1)
         self.window.draw_text(self.w_tiles/2 + 2, 16.7, "Bullets : " + str(self.weapons[self.selected_weapon_index]["n_bullets"]), 15, BLACK, TILESIZE=TILESIZE)
 
+    def settings(self):
+        # Screen to change settings
+        self.window.draw_text(self.w_tiles/2, 2, "Settings", 30, BLACK, TILESIZE=TILESIZE)
+
+        # Set fullscreen
+        if self.window.button(self.w_tiles/2, 5, 8, 2, "Fullscreen", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+            self.fullscreen = not self.fullscreen
+            self.window.screen = pg.display.set_mode((self.w_tiles*TILESIZE, self.h_tiles*TILESIZE), pg.FULLSCREEN if self.fullscreen else 0)
+            time.sleep(0.1)
+
+        # back button
+        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+            self.screenIsOn = "main-menu"
+            time.sleep(0.1)
+
+
         
+    
 
 

@@ -4,16 +4,17 @@ from maps.Map import Map
 from sprites.Zombi import Zombie
 import random
 from settings import *
+from dbSetup import *
 
 class Game:
     def __init__(self, window, difficulty, weapon_info):
         self.window = window
         self.screen = window.screen
         self.sprites = pygame.sprite.Group()
+        self.time_survived = 0
         self.map = Map(MAP_WIDTH, MAP_HEIGHT, self)
         self.create_sprites(weapon_info, difficulty)
         self.difficulty = difficulty
-        self.time_survived = 0
         self.back_to_menu = False
         self.weapon_info = weapon_info
         # shaking
@@ -47,16 +48,17 @@ class Game:
 
             self.events()
             self.update()
-            self.draw()
-
             if self.back_to_menu:
                 running = False
+                return
+            self.draw()
+
+            
 
             
             # FPS
             clock.tick(100)
             pygame.display.flip()  # Update the display
-
 
     def events(self):
         pass
@@ -89,14 +91,21 @@ class Game:
         self.shake_start_time = pygame.time.get_ticks()
 
     def spawn_zombie(self, speed, n=1):
+        if self.time_survived < 10000:
+            life = 3
+        else:
+            life = 3 + int((self.time_survived/10000))
+
         for _ in range(n):
             x = random.randint(1*TILESIZE, (MAP_WIDTH-2)*TILESIZE)
             y = random.randint(1*TILESIZE, (MAP_HEIGHT-2)*TILESIZE)
-            zombi = Zombie(self.player, x, y, speed)
+            zombi = Zombie(self.player, x, y, speed, life)
             self.zombies.add(zombi)
             self.sprites.add(zombi)
 
     def game_over(self):
+        time = pygame.time.get_ticks()
+        name = ""
         run = True
         while run:
             # color the screen white
@@ -106,19 +115,21 @@ class Game:
             self.window.draw_text(self.window.w_tiles/2, 1, "Game Over", 50, BLACK, TILESIZE=32)
 
 
-            if self.window.button(self.window.w_tiles/2, 14, 6, 2, "Back To Menu", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
+            if self.window.button(self.window.w_tiles/2, 17, 8, 2, "Back To Menu", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
                 self.back_to_menu = True
                 run = False
                 
 
-            if self.window.button(self.window.w_tiles/2, 17, 6, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
+            if self.window.button(18.75, 14, 8, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
                 self.back_to_menu = True
                 run = False
 
                 ## ici on sauvegarde les résultats, 
                 # pour le nom on envoie un nom au pif et je l'implémenterai plus tard
+                self.weapon_info.pop('image')
+                
                 res = {
-                    "name": "test",
+                    "name": name,
                     "weapon_info": self.weapon_info,
                     "time_survived": self.time_survived,
                     "difficulty": self.difficulty,
@@ -130,7 +141,13 @@ class Game:
                 }
 
                 print(res)
-                
+
+                ref = db.reference('/')
+                ref.push().set(res)
+
+            # def text_box(screen, text, x, y, w, h, time):
+            self.window.text_box(name, 6.25, 14, 10, 2, time)
+            
             # FPS
             self.window.clock.tick(60)
             pygame.display.flip()
@@ -144,4 +161,13 @@ class Game:
                     if event.key == pygame.K_ESCAPE:
                         self.back_to_menu = True
                         run = False
+                    elif event.key in range(pygame.K_a, pygame.K_z + 1):
+                        letter = pygame.key.name(event.key)
+                        name += letter
+                    elif event.key == pygame.K_BACKSPACE:
+                        try:
+                            name = self.name[:-1]
+                        except:
+                            name = ""
+
                         

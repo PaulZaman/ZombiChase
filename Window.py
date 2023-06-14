@@ -1,5 +1,6 @@
 import pygame as pg
 from settings import *
+import time
 
 class Window:
     def __init__(self, width, height):
@@ -15,25 +16,31 @@ class Window:
         pg.display.set_caption("ZombiChase")
 
     def button(self, x, y, w, h, text, button_color, button_hover_color, text_color, text_hover_color, border_radius=10, text_size=30, TILESIZE=1):
-        # This function creates a button on screen
-        # it returns the text of the button if it is pressed, and none otherwise
-        # changes the color of box when mouse is hovering over it
-        x = x*TILESIZE
-        y = y*TILESIZE
-        w = w*TILESIZE
-        h = h*TILESIZE
+        # This function creates a button on the screen
+        # It returns the text of the button if it is pressed, and None otherwise
+        # It changes the color of the box when the mouse is hovering over it
+
         mouse = pg.mouse.get_pos()
-        rect = pg.rect.Rect(0, 0, w, h)
-        rect.midtop = (x, y)
-        if rect.x < mouse[0] < rect.x + rect.width and rect.y < mouse[1] < rect.y + rect.height:
-            button_color = button_hover_color
-            text_color = text_hover_color
-            pg.event.get()
-            if pg.mouse.get_pressed()[0] == 1:
-                return text
+        click = pg.mouse.get_pressed()
+        
+        rect = pg.Rect(0, 0, w * TILESIZE, h * TILESIZE)
+        rect.midtop = (x * TILESIZE, y * TILESIZE)
+        
+        hovering = rect.collidepoint(*mouse)
+        
+        if hovering and click[0] == 1:  # Check for left button press
+            while pg.mouse.get_pressed()[0] == 1:  # Wait for button release
+                pg.event.get()
+            return text
+        
+        button_color = button_hover_color if hovering else button_color
+        text_color = text_hover_color if hovering else text_color
+        
         pg.draw.rect(self.screen, button_color, rect, border_radius=border_radius)
-        y = y + h/2 - text_size/2
-        self.draw_text(x, y, text, text_size, text_color)
+        text_x = rect.x + rect.width / 2
+        text_y = rect.y + rect.height / 2 - text_size / 2
+
+        self.draw_text(text_x, text_y, text, text_size, text_color)
 
     def draw_text(self, x, y, text, size, color, TILESIZE=1):
         font = pg.font.Font('freesansbold.ttf', size)
@@ -60,6 +67,7 @@ class Window:
             h = h * coeff
             stem_height = stem_height * coeff
             if pg.mouse.get_pressed()[0] == 1:
+                time.sleep(0.2)
                 return True
 
         if direction == "right":
@@ -77,3 +85,27 @@ class Window:
                  ((x) * TILESIZE, (y + h / 2) * TILESIZE)
             ))
 
+    def text_box(self, text, x, y, w, h, time):
+        # creates a text box with inputted text
+        # makes box grow as text is growing
+        # creates a vertical white bar to animate a bit
+        x = x * TILESIZE
+        y = y * TILESIZE
+        w = w * TILESIZE
+        h = h * TILESIZE
+        font = pg.font.Font('freesansbold.ttf', 25)
+        text_surface = font.render(text, True, WHITE)
+        text_width = text_surface.get_width()
+        text_height = text_surface.get_height()
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (x, y + h//2 - text_height//2)
+
+        if text_width + 40 > w:
+            w = text_width + 40
+        rect = pg.Rect(0, 0, w, h)
+        rect.midtop = (x, y)
+        pg.draw.rect(self.screen, BLACK, rect)
+        if (pg.time.get_ticks() - time) % 500 < 250:
+            pg.draw.line(self.screen, WHITE, (x + text_width // 2, y), (x + text_width // 2, y + h), 3)
+
+        self.screen.blit(text_surface, text_rect)

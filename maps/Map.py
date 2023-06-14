@@ -209,6 +209,7 @@ class Map:
         self.pos = self.game.player.pos
         self.tiles.update()
         self.update_powerups()
+        self.update_mini_map()
 
     def update_powerups(self):
         if len(self.powerups) < self.n_powerups:
@@ -219,3 +220,13 @@ class Map:
             powerup = Powerup(x, y, random.choice(["health", "fire_rate", "bullets", "precision", "damage"]), self)
             self.powerups.add(powerup)
         self.powerups.update()
+
+    def update_mini_map(self):
+        pass
+        """self.mini_map = pg.Surface((self.w * TILESIZE, self.h * TILESIZE))
+        self.mini_map.fill((0, 0, 0))
+        for tile in self.tiles:
+            if tile.type[:4] == "wall":
+                pg.draw.rect(self.mini_map, (255, 255, 255), (tile.rect.x, tile.rect.y, TILESIZE, TILESIZE))
+        self.mini_map = pg.transform.scale(self.mini_map, (self.w * 10, self.h * 10))
+        self.mini_map.set_alpha(100)"""

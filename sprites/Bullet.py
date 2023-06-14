@@ -6,10 +6,12 @@ class Bullet(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
 
         # image
-        self.image = pg.Surface((5, 5))
+        self.image = pg.Surface((10, 10))
+        self.image = pg.transform.rotate(self.image, direction.angle_to(pg.math.Vector2(1, 0)))
         self.image.fill((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.center = x, y
+
         self.zombie_group = zombie_group
         self.walls = walls
 

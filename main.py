@@ -4,3 +4,4 @@ from settings import *
 
 window = Window(SCREEN_WIDTH, SCREEN_HEIGHT)
 menu = Menu(window)
+

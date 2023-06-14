@@ -4,14 +4,15 @@ import re
 
 
 class Zombie(pg.sprite.Sprite):
-    def __init__(self, target, x, y, speed=1):
+    def __init__(self, target, x, y, life, speed=1):
         pg.sprite.Sprite.__init__(self)
         self.pos = pg.math.Vector2()
         self.pos.x = x
         self.pos.y = y
         self.target = target  # Reference to the player object
         self.speed = speed
-        self.life = 10
+        self.life = life
+        self.maxLife = life
         self.angle = 0
         self.is_chasing = False
 
@@ -152,7 +153,7 @@ class Zombie(pg.sprite.Sprite):
         health_bar_height = 5
         health_bar_x = self.rect.x + self.rect.width / 2 - health_bar_width / 2
         health_bar_y = self.rect.y - health_bar_height - 5
-        health_bar_fill_width = health_bar_width * self.life / 10
+        health_bar_fill_width = health_bar_width * self.life / self.maxLife
         health_bar_fill_rect = pg.Rect(health_bar_x, health_bar_y, health_bar_fill_width, health_bar_height)
         health_bar_outline_rect = pg.Rect(health_bar_x, health_bar_y, health_bar_width, health_bar_height)
         pg.draw.rect(screen, RED, health_bar_outline_rect)
