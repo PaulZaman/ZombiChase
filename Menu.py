@@ -28,6 +28,8 @@ class Menu:
         self.w_tiles = self.window.width / TILESIZE
         self.h_tiles = self.window.height / TILESIZE
 
+        self.bg = pg.transform.scale(pg.image.load(IMAGE_DIR + "/bg.jpg"), (self.window.width, self.window.height))
+
         self.main_loop()
         
         """weapon = {
@@ -59,7 +61,7 @@ class Menu:
 
         self.rifle_object = {
             "name": "rifle",
-            "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/rifle/idle/survivor-idle_rifle_0.png"), (128, 128)), 90),
+            "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/rifle/idle/survivor-idle_rifle_0.png"), (150, 128)), 90),
             "damage": 1,
             "fire_rate": 500,
             "bullet_speed":15,
@@ -69,7 +71,7 @@ class Menu:
 
         self.shotgun_object = {
             "name": "shotgun",
-            "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/shotgun/idle/survivor-idle_shotgun_0.png"), (128, 128)), 90),
+            "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/shotgun/idle/survivor-idle_shotgun_0.png"), (150, 128)), 90),
             "damage": 1,
             "fire_rate": 1500,
             "bullet_speed":10,
@@ -87,8 +89,8 @@ class Menu:
     def main_loop(self):
         run = True
         while run:
-            # color the screen white
-            self.window.screen.fill(WHITE)
+            # display bg
+            self.window.screen.blit(self.bg, (0, 0))
 
             # Display correct screen
             if self.screenIsOn == "main-menu":
@@ -123,26 +125,28 @@ class Menu:
         # Title
         #self.window.draw_text(10, 10, "ZombiChase", 50, (0, 0, 0))
         self.window.draw_text(self.w_tiles/2, 1, "ZombiChase", 50, BLACK, TILESIZE=32)
+
         # x, y, w, h, text, button_color, button_hover_color, text_color, text_hover_color, border_radius=10, text_size=30, TILESIZE=1
-        if self.window.button(self.w_tiles/2, 4, 10, 2, "Start Game", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=32):
+        if self.window.button(self.w_tiles/2, 4, 10, 2, "Start Game", BLUE3, BLUE, BEIGE, BEIGE, TILESIZE=32):
             self.screenIsOn = "start-game"
             self.init_game_params()
             self.init_weapons()
             return
 
-        if self.window.button(self.w_tiles/2, 7, 10, 2, "Settings", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=32):
+        if self.window.button(self.w_tiles/2, 7, 10, 2, "Settings", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
             self.screenIsOn = "settings"
             return
         
-        if self.window.button(self.w_tiles/2, 10, 10, 2, "Highscores", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=32):
+        if self.window.button(self.w_tiles/2, 10, 10, 2, "Highscores", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
             self.screenIsOn = "highscores"
+
             return
         
-        if self.window.button(self.w_tiles/2, 13, 10, 2, "Credits", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=32):
+        if self.window.button(self.w_tiles/2, 13, 10, 2, "Credits", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
             self.screenIsOn = "credits"
             return
         
-        if self.window.button(self.w_tiles/2, 16, 10, 2, "Quit", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=32):
+        if self.window.button(self.w_tiles/2, 16, 10, 2, "Quit", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
             pg.quit()
             quit()
 
@@ -157,19 +161,19 @@ class Menu:
 
         # Difficulty
         self.window.draw_text(self.w_tiles/2, 4, "Difficulty", 20, BLACK, TILESIZE=TILESIZE)
-        self.window.draw_text(self.w_tiles/2, 5, str(self.game_difficulty), 20, BLACK, TILESIZE=TILESIZE)
-        if self.window.draw_arrow(self.w_tiles/2 + 2, 5, 1.5, 1, 0.3, BLACK, "right", 1.2, TILESIZE=TILESIZE):
+        self.window.draw_text(self.w_tiles/2, 5.2, str(self.game_difficulty), 20, BLACK, TILESIZE=TILESIZE)
+        if self.window.draw_arrow(self.w_tiles/2 + 2, 5, 1.5, 1, 0.3, BLUE, "right", 1.2, TILESIZE=TILESIZE):
             self.game_difficulty = min(self.game_difficulty + 1, 10)
-        if self.window.draw_arrow(self.w_tiles/2 - 3.5, 5, 1.5, 1, 0.3, BLACK, "left", 1.2, TILESIZE=TILESIZE):
+        if self.window.draw_arrow(self.w_tiles/2 - 3.5, 5, 1.5, 1, 0.3, BLUE, "left", 1.2, TILESIZE=TILESIZE):
             self.game_difficulty = max(self.game_difficulty - 1, 1)
 
-        if self.window.button(8 + self.w_tiles/2, 15, 5, 2, "Start", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+        if self.window.button(8 + self.w_tiles/2, 15, 5, 2, "Start", BLUE3, BLUE, BEIGE, BEIGE, TILESIZE=TILESIZE):
             self.init_game()
             self.screenIsOn = "main-menu"
             time.sleep(0.1)
             return
         
-        if self.window.button(self.w_tiles/2 - 8, 15, 5, 2, "Back", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+        if self.window.button(self.w_tiles/2 - 8, 15, 5, 2, "Back", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=TILESIZE):
             self.screenIsOn = "main-menu"
             time.sleep(0.1)
             return
@@ -179,13 +183,16 @@ class Menu:
         rect = pg.Rect((self.w_tiles/2 - 4.5)*TILESIZE, 7*TILESIZE, 9*TILESIZE, 11*TILESIZE)
         pg.draw.rect(self.window.screen, BEIGE, rect)
         self.window.draw_text(self.w_tiles/2, 7.5, self.weapons[self.selected_weapon_index]["name"], 20, BLACK, TILESIZE=TILESIZE)
+
         # blit image
-        self.window.screen.blit(self.weapons[self.selected_weapon_index]["image"], ((self.w_tiles/2 - 2)*TILESIZE, 8*TILESIZE))
+        #W = self.weapons[self.selected_weapon_index]["image"].get_width()
+        H = self.weapons[self.selected_weapon_index]["image"].get_height()
+        self.window.screen.blit(self.weapons[self.selected_weapon_index]["image"], ((self.w_tiles/2 - 2)*TILESIZE, 12*TILESIZE + 15 - H))
 
         # arrows
-        if self.window.draw_arrow(self.w_tiles/2 + 2, 10, 1.5, 1, 0.3, BLACK, "right", 1.2, TILESIZE=TILESIZE):
+        if self.window.draw_arrow(self.w_tiles/2 + 2, 10, 1.5, 1, 0.3, BLUE, "right", 1.2, TILESIZE=TILESIZE):
             self.selected_weapon_index = (self.selected_weapon_index + 1) % len(self.weapons)
-        if self.window.draw_arrow(self.w_tiles/2 - 3.5, 10, 1.5, 1, 0.3, BLACK, "left", 1.2, TILESIZE=TILESIZE):
+        if self.window.draw_arrow(self.w_tiles/2 - 3.5, 10, 1.5, 1, 0.3, BLUE, "left", 1.2, TILESIZE=TILESIZE):
             self.selected_weapon_index = (self.selected_weapon_index - 1) % len(self.weapons)
 
         # weapon stats
@@ -215,18 +222,29 @@ class Menu:
         self.window.draw_text(self.w_tiles/2, 2, "Settings", 30, BLACK, TILESIZE=TILESIZE)
 
         # Set fullscreen
-        if self.window.button(self.w_tiles/2, 5, 8, 2, "Fullscreen", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+        if self.window.button(self.w_tiles/2, 5, 8, 2, "Fullscreen", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=TILESIZE):
             self.fullscreen = not self.fullscreen
             self.window.screen = pg.display.set_mode((self.w_tiles*TILESIZE, self.h_tiles*TILESIZE), pg.FULLSCREEN if self.fullscreen else 0)
             time.sleep(0.1)
 
         # back button
-        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=TILESIZE):
             self.screenIsOn = "main-menu"
             time.sleep(0.1)
 
+    def credits(self):
+        self.window.draw_text(self.w_tiles/2, 2, "Credits", 30, BLACK, TILESIZE=TILESIZE)
 
-        
-    
+        self.window.draw_text(self.w_tiles/2, 5, "Made by : ", 20, BLACK, TILESIZE=TILESIZE)
+        self.window.draw_text(self.w_tiles/2, 6, "- Matthieu Vichet", 20, BLACK, TILESIZE=TILESIZE)
+        self.window.draw_text(self.w_tiles/2, 7, "- Nelsa Yago", 20, BLACK, TILESIZE=TILESIZE)   
+        self.window.draw_text(self.w_tiles/2, 8, "- Paul Zamanian", 20, BLACK, TILESIZE=TILESIZE)   
 
+        # github link
+        self.window.draw_text(self.w_tiles/2, 10, "Github link : ", 20, BLACK, TILESIZE=TILESIZE)
+        self.window.draw_text(self.w_tiles/2, 11, "https://github.com/PaulZaman/ZombiChase", 20, BLACK, TILESIZE=TILESIZE)   
 
+        # back button
+        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+            self.screenIsOn = "main-menu"
+            time.sleep(0.1)

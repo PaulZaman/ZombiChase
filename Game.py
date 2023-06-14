@@ -117,36 +117,19 @@ class Game:
 
             if self.window.button(self.window.w_tiles/2, 17, 8, 2, "Back To Menu", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
                 self.back_to_menu = True
-                run = False
+                run = False     
+
+            self.disp_game_info(name) 
                 
 
             if self.window.button(18.75, 14, 8, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
+                self.save_to_server(name)
                 self.back_to_menu = True
                 run = False
 
-                ## ici on sauvegarde les résultats, 
-                # pour le nom on envoie un nom au pif et je l'implémenterai plus tard
-                self.weapon_info.pop('image')
-                
-                res = {
-                    "name": name,
-                    "weapon_info": self.weapon_info,
-                    "time_survived": self.time_survived,
-                    "difficulty": self.difficulty,
-                    "n_bullets_shot": self.player.bullets_shot,
-                    "score": self.player.score,
-                    "bullets_missed": self.player.bullets_missed,
-                    "zombies_killed": self.player.zombies_killed,
-                    "powerups_collected": self.player.powerups_collected
-                }
-
-                print(res)
-
-                ref = db.reference('/')
-                ref.push().set(res)
-
             # def text_box(screen, text, x, y, w, h, time):
             self.window.text_box(name, 6.25, 14, 10, 2, time)
+
             
             # FPS
             self.window.clock.tick(60)
@@ -169,5 +152,38 @@ class Game:
                             name = self.name[:-1]
                         except:
                             name = ""
-
+                    elif event.key == pygame.K_KP_ENTER:
+                        self.save_to_server(name)
                         
+    def save_to_server(self, name):
+        ## ici on sauvegarde les résultats, 
+        # pour le nom on envoie un nom au pif et je l'implémenterai plus tard
+        self.weapon_info.pop('image')
+        
+        res = {
+            "name": name,
+            "weapon_info": self.weapon_info,
+            "time_survived": self.time_survived,
+            "difficulty": self.difficulty,
+            "n_bullets_shot": self.player.bullets_shot,
+            "score": self.player.score,
+            "bullets_missed": self.player.bullets_missed,
+            "zombies_killed": self.player.zombies_killed,
+            "powerups_collected": self.player.powerups_collected
+        }
+
+        ref = db.reference('/')
+        ref.push().set(res)
+
+    def disp_game_info(self, name):
+        disp = {
+            "Score": self.player.score,
+            "Time": self.time_survived,
+            "Kills": self.player.zombies_killed,
+            "Difficulty": self.difficulty,
+            "Bullets shot": self.player.bullets_shot,
+            "Weapon": self.weapon_info["name"],
+        }
+        
+        for i, (key, value) in enumerate(disp.items()):
+            self.window.draw_text(self.window.w_tiles/2, 5 + i, f"{key} : {value}", 20, BLACK, TILESIZE=TILESIZE)
