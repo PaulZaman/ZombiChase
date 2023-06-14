@@ -1,22 +1,11 @@
 from Game import Game
 from settings import *
+from dbSetup import *
+from collections import deque
 import pygame as pg
 import time
-
-# Screens
-    # Main Menu
-        # Settings
-            # Change Controls
-            # Change Volume
-            # Change Fullscreen
-        # Highscores
-            # Show Highscores
-            # Reset Highscores
-        # Credits
-        # Start Game
-            # Choose Weapon
-            # Choose Difficulty
-            # Start Game
+from heapq import nlargest
+import json
 
 
 class Menu:
@@ -123,7 +112,6 @@ class Menu:
         # Main Menu
 
         # Title
-        #self.window.draw_text(10, 10, "ZombiChase", 50, (0, 0, 0))
         self.window.draw_text(self.w_tiles/2, 1, "ZombiChase", 50, BLACK, TILESIZE=32)
 
         # x, y, w, h, text, button_color, button_hover_color, text_color, text_hover_color, border_radius=10, text_size=30, TILESIZE=1
@@ -139,7 +127,7 @@ class Menu:
         
         if self.window.button(self.w_tiles/2, 10, 10, 2, "Highscores", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
             self.screenIsOn = "highscores"
-
+            self.filter_highscore()
             return
         
         if self.window.button(self.w_tiles/2, 13, 10, 2, "Credits", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
@@ -180,8 +168,10 @@ class Menu:
 
     def show_weapons(self):
         # show weapons box
-        rect = pg.Rect((self.w_tiles/2 - 4.5)*TILESIZE, 7*TILESIZE, 9*TILESIZE, 11*TILESIZE)
-        pg.draw.rect(self.window.screen, BEIGE, rect)
+        rect = pg.Surface((9*TILESIZE, 11*TILESIZE), pg.SRCALPHA)
+        rect.fill(BEIGE)
+        rect.set_alpha(200)
+        self.window.screen.blit(rect, ((self.w_tiles/2 - 4.5)*TILESIZE, 7*TILESIZE))
         self.window.draw_text(self.w_tiles/2, 7.5, self.weapons[self.selected_weapon_index]["name"], 20, BLACK, TILESIZE=TILESIZE)
 
         # blit image
@@ -233,8 +223,16 @@ class Menu:
             time.sleep(0.1)
 
     def credits(self):
+        # draw rect for credits
+        rect = pg.Surface((15*TILESIZE, 13*TILESIZE), pg.SRCALPHA)
+        rect.fill(BEIGE)
+        rect.set_alpha(200)        
+        self.window.screen.blit(rect, (5*TILESIZE, TILESIZE))
+
+        # title
         self.window.draw_text(self.w_tiles/2, 2, "Credits", 30, BLACK, TILESIZE=TILESIZE)
 
+        # made by
         self.window.draw_text(self.w_tiles/2, 5, "Made by : ", 20, BLACK, TILESIZE=TILESIZE)
         self.window.draw_text(self.w_tiles/2, 6, "- Matthieu Vichet", 20, BLACK, TILESIZE=TILESIZE)
         self.window.draw_text(self.w_tiles/2, 7, "- Nelsa Yago", 20, BLACK, TILESIZE=TILESIZE)   
@@ -245,6 +243,89 @@ class Menu:
         self.window.draw_text(self.w_tiles/2, 11, "https://github.com/PaulZaman/ZombiChase", 20, BLACK, TILESIZE=TILESIZE)   
 
         # back button
-        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", GREEN, LIGHT_GREEN, RED, RED, TILESIZE=TILESIZE):
+        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=TILESIZE):
             self.screenIsOn = "main-menu"
             time.sleep(0.1)
+
+    def highscores(self):
+        self.window.draw_text(self.w_tiles / 2, 1, "Highscores", 30, BLACK, TILESIZE=TILESIZE)
+
+        # draw a almost transparent black rectangle to make the text more readable
+        rect = pg.Surface((self.w_tiles*TILESIZE, (self.h_tiles-4)*TILESIZE), pg.SRCALPHA) 
+        rect.fill((0, 0, 0, 100))
+        self.window.screen.blit(rect, (0, 2*TILESIZE))
+
+        # Table headers
+        headers = ["Rank", "Name", "Score", "Duration", "Zombies Killed", "Difficulty", "Bullets Shot", "Weapon Info"]
+        row_height = 1
+        self.window.draw_text(self.w_tiles / 2, 3, "     ".join(headers), 17, WHITE, TILESIZE=TILESIZE)
+
+        # Display highscores as a table
+        for i, entry in enumerate(self.filtered_data):
+            rank = str(i + 1)
+            name = entry['name']
+            score = str(entry['score'])
+            time_survived = str(entry['time_survived'])
+            zombies_killed = str(entry['zombies_killed'])
+            difficulty = str(entry['difficulty'])
+            bullets_shot = str(entry['n_bullets_shot'])
+            weapon_info = entry['weapon_info']['name']
+
+            # Calculate the position of each column
+            rank_x = self.w_tiles / 2 - 12
+            name_x = self.w_tiles / 2 - 9.5
+            score_x = self.w_tiles / 2 - 7
+            time_x = self.w_tiles / 2 - 4.5
+            zombies_x = self.w_tiles / 2  - 1
+            difficulty_x = self.w_tiles / 2 + 3
+            bullets_x = self.w_tiles / 2 + 6.5
+            weapon_x = self.w_tiles / 2 + 10.5
+
+            # Display each column value
+            y = 3 + (i + 1) * row_height
+            self.window.draw_text(rank_x, y, rank, 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(name_x, y, name, 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(score_x, y, score, 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(time_x,y, str(int(int(time_survived) /1000))+"s", 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(zombies_x, y, zombies_killed, 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(difficulty_x, y, difficulty, 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(bullets_x, y, bullets_shot, 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(weapon_x, y, weapon_info, 18, WHITE, TILESIZE=TILESIZE)
+
+                # back button
+        if self.window.button(self.w_tiles/2, 15, 8, 2, "Back", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=TILESIZE):
+            self.screenIsOn = "main-menu"
+            time.sleep(0.1)
+
+    def filter_highscore(self):
+        
+
+        ref = db.reference('/')  # Replace with the path to your data
+        data = ref.get()
+
+        self.filtered_data = []
+        keys = deque(data.keys())  # Store the keys in a deque for easy accessfor _ in range(10):
+        for _ in range(10):
+            if not keys:
+                break
+            key = keys.pop()
+            value = data[key]
+            if 'name' in value and 'score' in value and 'time_survived' in value and 'zombies_killed' in value and 'difficulty' in value and 'n_bullets_shot' in value and 'weapon_info' in value:
+                entry = {
+                    'name': value['name'],
+                    'score': value['score'],
+                    'time_survived': value['time_survived'],
+                    'zombies_killed': value['zombies_killed'],
+                    'difficulty': value['difficulty'],
+                    'n_bullets_shot': value['n_bullets_shot'],
+                    'weapon_info': value['weapon_info']
+                }
+                self.filtered_data.append(entry)
+
+                                        # Use the filtered data
+            # Filter out entries with None scores
+        self.filtered_data = [entry for entry in self.filtered_data if entry['score'] is not None]
+
+            # Get the 10 entries with the highest scores
+        self.filtered_data = nlargest(10, self.filtered_data, key=lambda entry: entry['score'])
+
