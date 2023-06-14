@@ -82,6 +82,10 @@ class Zombie(pg.sprite.Sprite):
             self.attack_images.append(image)"""
 
     def update(self):
+        # update the rect position
+        self.rect.x = self.pos.x - self.target.pos.x
+        self.rect.y = self.pos.y - self.target.pos.y
+
         # calculate the distance between the zombie and the player
         self.distance = pg.math.Vector2(self.target.rect.x - self.rect.x, self.target.rect.y - self.rect.y).length()
 
@@ -94,10 +98,6 @@ class Zombie(pg.sprite.Sprite):
         self.attack()
 
         self.animate()
-
-        # update the rect position
-        self.rect.x = self.pos.x - self.target.pos.x
-        self.rect.y = self.pos.y - self.target.pos.y
 
         # update the collision rect position
         centroid = pg.mask.from_surface(self.image).centroid()

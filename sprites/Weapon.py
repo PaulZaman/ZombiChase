@@ -39,7 +39,6 @@ class Weapon():
         if pg.time.get_ticks() - self.last_shot > self.fire_rate:
           for _ in range(int(self.n_bullets)-1):
             self.bullets.add(self.create_bullet(offset=rand.randint(-self.precision, self.precision)))
-            self.player.bullets_shot += 1
           self.bullets.add(self.create_bullet())
           self.last_shot = pg.time.get_ticks()
 
@@ -48,6 +47,7 @@ class Weapon():
         direction = pg.math.Vector2(pg.mouse.get_pos()) - pg.math.Vector2(self.player.rect.center)
 
         spawn_pos = self.player.rect.center + self.gun_offset.rotate(-self.player.angle)
+        self.player.bullets_shot += 1
 
         # apply offset to the direction vector
         direction = direction.rotate(offset)

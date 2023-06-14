@@ -17,6 +17,9 @@ class Map:
         self.powerups = pg.sprite.Group()
         self.n_powerups = 5
 
+        if len(self.rooms) <= self.n_powerups:
+            self.n_powerups = len(self.rooms) - 1
+
     def create_tiles(self):
         self.walls = pg.sprite.Group()
         self.tiles = pg.sprite.Group()
@@ -47,8 +50,8 @@ class Map:
         room_h = random.randint(6, 15)
 
         # Randomly generate room position
-        room_x = random.randint(4, self.w - room_w - 4)
-        room_y = random.randint(4, self.h - room_h - 4)
+        room_x = random.randint(4, self.w - room_w - 5)
+        room_y = random.randint(4, self.h - room_h - 5)
 
          # Check if room overlaps with other rooms with 2-tile spacing
         for room in self.rooms:

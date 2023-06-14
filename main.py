@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from Window import Window
 from Menu import Menu
 from settings import *

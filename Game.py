@@ -97,9 +97,19 @@ class Game:
             life = 3 + int((self.time_survived/10000))
 
         for _ in range(n):
-            x = random.randint(1*TILESIZE, (MAP_WIDTH-2)*TILESIZE)
-            y = random.randint(1*TILESIZE, (MAP_HEIGHT-2)*TILESIZE)
-            zombi = Zombie(self.player, x, y, speed, life)
+            to_close_to_player = True
+            while to_close_to_player:
+                # get random position
+                x = random.randint(1*TILESIZE, (MAP_WIDTH-2)*TILESIZE)
+                y = random.randint(1*TILESIZE, (MAP_HEIGHT-2)*TILESIZE)
+                # create zombie
+                zombi = Zombie(self.player, x, y,  life, speed=speed)
+                # check if too close to player
+                to_close_to_player = False
+                if zombi.distance < 400:
+                    to_close_to_player = True
+                    zombi.kill()
+            # add zombie to groups
             self.zombies.add(zombi)
             self.sprites.add(zombi)
 
@@ -119,18 +129,18 @@ class Game:
                 self.back_to_menu = True
                 run = False     
 
-            self.disp_game_info(name) 
+            self.disp_game_info() 
                 
 
             if self.window.button(18.75, 14, 8, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
-                self.save_to_server(name)
                 self.back_to_menu = True
                 run = False
+                self.save_to_server(name)
+                print("saved to server")
 
             # def text_box(screen, text, x, y, w, h, time):
             self.window.text_box(name, 6.25, 14, 10, 2, time)
 
-            
             # FPS
             self.window.clock.tick(60)
             pygame.display.flip()
@@ -157,8 +167,11 @@ class Game:
                         
     def save_to_server(self, name):
         ## ici on sauvegarde les résultats, 
-        # pour le nom on envoie un nom au pif et je l'implémenterai plus tard
-        self.weapon_info.pop('image')
+        print("saving to server")
+        try:
+            self.weapon_info.pop('image')
+        except:
+            pass
         
         res = {
             "name": name,
@@ -172,10 +185,12 @@ class Game:
             "powerups_collected": self.player.powerups_collected
         }
 
+        print(res)
+
         ref = db.reference('/')
         ref.push().set(res)
 
-    def disp_game_info(self, name):
+    def disp_game_info(self):
         disp = {
             "Score": self.player.score,
             "Time": self.time_survived,
