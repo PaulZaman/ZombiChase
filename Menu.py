@@ -6,6 +6,7 @@ import pygame as pg
 import time
 from heapq import nlargest
 import json
+import sys
 
 
 class Menu:
@@ -136,7 +137,7 @@ class Menu:
         
         if self.window.button(self.w_tiles/2, 16, 10, 2, "Quit", BLUE2, BLUE, BEIGE, BEIGE, TILESIZE=32):
             pg.quit()
-            quit()
+            sys.exit()
 
     def game_params(self):
         # Screen to select game parameters, weapon, difficulty, start button
