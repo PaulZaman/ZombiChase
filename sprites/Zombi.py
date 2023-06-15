@@ -2,8 +2,10 @@ import pygame as pg
 from settings import *
 import re
 
-
 class Zombie(pg.sprite.Sprite):
+    idle_images = []
+    moving_images = []
+
     def __init__(self, target, x, y, life, speed=1):
         pg.sprite.Sprite.__init__(self)
         self.pos = pg.math.Vector2()
@@ -34,52 +36,10 @@ class Zombie(pg.sprite.Sprite):
         # collision rect 
         self.collision_rect = pg.Rect(380, 280, 40, 40)
 
-        self.load_images()
-        self.image = self.idle_images[self.idle_frame_index]
+        # Set up the image
+        self.image = Zombie.idle_images[self.idle_frame_index]
         self.rect = self.image.get_rect()
         self.update()
-
-    def load_images(self):
-        idle_dir = IMAGE_DIR + "/zombi/idle"
-        # create list to hold images
-        self.idle_images = []
-        file_names = os.listdir(idle_dir)
-        file_names.sort(key=lambda x: int(re.findall(r'\d+', x)[0]))
-        for file_name in file_names:
-            # load image
-            image = pg.image.load(os.path.join(idle_dir, file_name)).convert_alpha()
-            # resize image
-            image = pg.transform.scale(image, (80, 80))
-            # add image to list
-            self.idle_images.append(image)
-
-        moving_dir = IMAGE_DIR + "/zombi/move"
-        # create list to hold images
-        self.moving_images = []
-        file_names = os.listdir(moving_dir)
-        # Sort file names based on numerical suffix
-        file_names.sort(key=lambda x: int(re.findall(r'\d+', x)[0]))
-        for file_name in file_names:
-            # load image
-            image = pg.image.load(os.path.join(moving_dir, file_name)).convert_alpha()
-            # resize image
-            image = pg.transform.scale(image, (100, 100))
-            # add image to list
-            self.moving_images.append(image)
-
-        """attack_dir = IMAGE_DIR + "/zombi/attack"
-        # create list to hold images
-        self.attack_images = []
-        file_names = os.listdir(attack_dir)
-        file_names.sort(key=lambda x: int(re.findall(r'\d+', x)[0]) if re.findall(r'\d+', x) else 0)
-        print(file_names)
-        for file_name in file_names:
-            # load image
-            image = pg.image.load(os.path.join(attack_dir, file_name)).convert_alpha()
-            # resize image
-            image = pg.transform.scale(image, (100, 100))
-            # add image to list
-            self.attack_images.append(image)"""
 
     def update(self):
         # update the rect position
@@ -109,20 +69,22 @@ class Zombie(pg.sprite.Sprite):
             self.kill()
 
     def animate(self):
+        idle_images = Zombie.idle_images
+        moving_images = Zombie.moving_images
         now = pg.time.get_ticks()
 
         # animate idle
         if (now - self.idle_last_update > self.idle_animation_delay) and self.is_chasing == False:
             self.idle_last_update = now
-            self.idle_frame_index = (self.idle_frame_index + 1) % len(self.idle_images)
-            self.image = self.idle_images[self.idle_frame_index]     
+            self.idle_frame_index = (self.idle_frame_index + 1) % len(idle_images)
+            self.image = idle_images[self.idle_frame_index]     
             self.image = pg.transform.rotate(self.image, self.angle)
 
         # animate walk
         if (now - self.walk_last_update > self.walk_animation_delay) and self.is_chasing == True:
             self.walk_last_update = now
-            self.walk_frame_index = (self.walk_frame_index + 1) % len(self.moving_images)
-            self.image = self.moving_images[self.walk_frame_index]
+            self.walk_frame_index = (self.walk_frame_index + 1) % len(moving_images)
+            self.image = moving_images[self.walk_frame_index]
             self.image = pg.transform.rotate(self.image, self.angle)
 
     def chase(self):
@@ -177,3 +139,33 @@ class Zombie(pg.sprite.Sprite):
         self.attacking = True
         self.target.hit(10)
         self.last_attack = now
+
+    @staticmethod
+    def load_images():
+        idle_dir = IMAGE_DIR + "/zombi/idle"
+        # create list to hold images
+        idle_images = []
+        file_names = os.listdir(idle_dir)
+        file_names.sort(key=lambda x: int(re.findall(r'\d+', x)[0]))
+        for file_name in file_names:
+            # load image
+            image = pg.image.load(os.path.join(idle_dir, file_name)).convert_alpha()
+            # resize image
+            image = pg.transform.scale(image, (80, 80))
+            # add image to list
+            idle_images.append(image)
+
+        moving_dir = IMAGE_DIR + "/zombi/move"
+        # create list to hold images
+        moving_images = []
+        file_names = os.listdir(moving_dir)
+        # Sort file names based on numerical suffix
+        file_names.sort(key=lambda x: int(re.findall(r'\d+', x)[0]))
+        for file_name in file_names:
+            # load image
+            image = pg.image.load(os.path.join(moving_dir, file_name)).convert_alpha()
+            # resize image
+            image = pg.transform.scale(image, (100, 100))
+            # add image to list
+            moving_images.append(image)
+        return idle_images, moving_images

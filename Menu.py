@@ -43,7 +43,7 @@ class Menu:
             "name": "handgun",
             "image":pg.transform.rotate(pg.transform.scale(pg.image.load(IMAGE_DIR + "/player/handgun/idle/survivor-idle_handgun_0.png"), (128, 128)), 90),
             "damage": 2,
-            "fire_rate": 1000,
+            "fire_rate": 1200,
             "bullet_speed":20,
             "n_bullets":1,
             "precision":15,

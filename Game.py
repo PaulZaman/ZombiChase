@@ -8,27 +8,36 @@ from dbSetup import *
 
 class Game:
     def __init__(self, window, difficulty, weapon_info):
+        # params
         self.window = window
         self.screen = window.screen
-        self.sprites = pygame.sprite.Group()
         self.time_survived = 0
-        self.map = Map(MAP_WIDTH, MAP_HEIGHT, self)
-        self.create_sprites(weapon_info, difficulty)
         self.difficulty = difficulty
         self.back_to_menu = False
         self.weapon_info = weapon_info
-        # shaking
+
+        # create sprites and map
+        self.sprites = pygame.sprite.Group()
+        self.map = Map(MAP_WIDTH, MAP_HEIGHT, self)
+        self.create_sprites(weapon_info, difficulty)
+        
+        # shaking params
         self.shake_start_time = 0
         self.shake_duration = 500
         self.shake = 2
+
         # run
         self.run()
 
     def create_sprites(self, weapon_info, difficulty, n_zombies=10):
+        # create player
         self.player = Player(self, 350, 250, 100, weapon_info)
 
+        # create zombies group and load images
+        Zombie.idle_images, Zombie.moving_images = Zombie.load_images()
         self.zombies = pygame.sprite.Group()
 
+        # spawn zombies depending on difficulty
         self.spawn_zombie(difficulty, n=n_zombies)
         self.sprites.add(self.player)
 
