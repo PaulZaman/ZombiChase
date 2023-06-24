@@ -53,23 +53,16 @@ Compete against other players and see how your survival skills stack up against 
 
 To embark on this epic survival adventure, follow these simple steps:
 
-##### 1️⃣ Set Up the Virtual Environment:
-To streamline the installation process, we have prepared a virtual environment. Activate it by executing the following command in the project's root folder:
+##### 1️⃣ Set Up the Environnement:
+To streamline the installation process, we have prepared a requirements file. To install the dependencies, enter into your terminal at the main directory of the project
 
-###### 🚀 On macOS and Linux:
+###### 🚀 On macOS, Linux and Windows:
 ```bash
-
-source env/bin/activate
-```
-
-###### 🚀 On Windows:
-
-```bash
-INSERT WINDOWS COMMAND HERE
-```
+ pip install -r requirements.txt 
+ ```
 
 #### 2️⃣ Launch the Game:
-Once the virtual environment is activated, run the game using the following command:
+Once you have installed dependancies, run the game using the following command:
 
 ```bash
 python3 main.py
