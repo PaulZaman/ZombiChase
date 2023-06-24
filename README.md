@@ -20,6 +20,12 @@ Move swiftly using either the arrow keys or the Z-Q-S-D keys on your keyboard. T
 ##### 🗺️ Randomly Generated Maps:
 Every playthrough of ZombiChase offers a unique and unpredictable experience. Brace yourself as the game generates completely random maps, ensuring no two games are ever the same.
 
+##### 🧟‍♀️🧟‍♂️💥 Endless Waves of Zombies:
+The zombies in ZombiChase are relentless and will stop at nothing to devour you. As you progress through the game, the zombies will become faster and more aggressive. Can you survive the onslaught?
+
+##### 🏆 Leaderboards:
+Compete against other players and see how your survival skills stack up against the rest of the world. Can you achieve the top spot on the leaderboards?
+
 ## 🔥 Installation Instructions 🔥
 
 To embark on this epic survival adventure, follow these simple steps:
