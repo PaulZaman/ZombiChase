@@ -75,6 +75,8 @@ class Menu:
 
     def init_game(self):
         self.game = Game(self.window, self.game_difficulty, self.weapons[self.selected_weapon_index])
+        self.game = None
+
 
     def main_loop(self):
         run = True

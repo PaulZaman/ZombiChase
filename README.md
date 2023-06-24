@@ -2,6 +2,10 @@
 
 Welcome to ZombiChase, an exhilarating Rogue-like game developed using Python and Pygame. Prepare yourself for an adrenaline-pumping adventure where your main objective is to survive as long as possible against hordes of relentless zombies. Can you beat the odds and emerge as the ultimate survivor? 🏆
 
+## 🎮 Gameplay 🎮
+
+[ZombiChase Gameplay](../images/gameplay.mov)
+
 ## 🌟 Game Features 🌟
 
 ##### 🔫 Choose Your Weapon:
@@ -16,6 +20,24 @@ Navigate through a dynamically generated, ever-changing world as you try to surv
 
 ##### 🎮 Easy Controls:
 Move swiftly using either the arrow keys or the Z-Q-S-D keys on your keyboard. Take aim with your trusty mouse and unleash your weapon's firepower with a simple click or by pressing the spacebar.
+
+
+###### Power-Ups:
+🚀 Power-Ups: Prepare for the Ultimate Zombie-Slaying Arsenal! 🚀
+As you progress through the game, you will encounter various power-ups that will give you the edge in surviving the zombie apocalypse. These power-ups include:
+
+- 🩹 Health Packs: 💖 Restore your health and keep you in the fight for longer.
+
+- 🎯 Precision Bullets: 🎯 Enhance your weapon's accuracy, ensuring your shots hit their mark with deadly precision.
+
+- 💥 Bullet Damage: 💥 Amp up your weapon's bullet damage, turning the undead into mincemeat with each well-placed shot.
+
+- 🔥 Fire Rate: 🔥 Increase your weapon's fire rate, unleashing a storm of bullets upon the zombie horde and leaving no chance for escape.
+
+- 💥 Multi-Shot: 💥 Multiply your weapon's firepower by unleashing multiple bullets per shot, obliterating zombies in a single pull of the trigger.
+
+🔮 Explore the game world, uncover these power-ups, and become an unstoppable force against the undead. May the power of these enhancements guide you to victory! 🔮
+
 
 ##### 🗺️ Randomly Generated Maps:
 Every playthrough of ZombiChase offers a unique and unpredictable experience. Brace yourself as the game generates completely random maps, ensuring no two games are ever the same.
@@ -35,6 +57,7 @@ To streamline the installation process, we have prepared a virtual environment. 
 
 ###### 🚀 On macOS and Linux:
 ```bash
+
 source env/bin/activate
 ```
 

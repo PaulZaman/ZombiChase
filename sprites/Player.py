@@ -176,7 +176,7 @@ class Player(pg.sprite.Sprite):
     def hit(self, damage):
         self.life -= damage
         if self.life <= 0:
-            self.kill()
             self.game.game_over()
+            self.kill()
         else:
             self.game.shake_screen()

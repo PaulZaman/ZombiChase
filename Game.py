@@ -5,12 +5,16 @@ from sprites.Zombi import Zombie
 import random
 from settings import *
 from dbSetup import *
+import concurrent.futures
+import asyncio
+
 
 class Game:
     def __init__(self, window, difficulty, weapon_info):
         # params
         self.window = window
         self.screen = window.screen
+        self.start_time_game = pygame.time.get_ticks()
         self.time_survived = 0
         self.difficulty = difficulty
         self.back_to_menu = False
@@ -62,9 +66,7 @@ class Game:
                 return
             self.draw()
 
-            
-
-            
+        
             # FPS
             clock.tick(100)
             pygame.display.flip()  # Update the display
@@ -73,7 +75,7 @@ class Game:
         pass
 
     def update(self):
-        self.time_survived = pygame.time.get_ticks()
+        self.time_survived = pygame.time.get_ticks() - self.start_time_game
 
         self.sprites.update()
 
@@ -122,6 +124,8 @@ class Game:
             self.sprites.add(zombi)
 
     def game_over(self):
+        if self.back_to_menu:
+            return
         time = pygame.time.get_ticks()
         name = ""
         run = True
@@ -142,9 +146,10 @@ class Game:
 
             if self.window.button(18.75, 14, 8, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
                 self.back_to_menu = True
-                run = False
                 self.save_to_server(name)
                 print("saved to server")
+                run = False
+                return
 
             # def text_box(screen, text, x, y, w, h, time):
             self.window.text_box(name, 6.25, 14, 10, 2, time)
@@ -194,14 +199,18 @@ class Game:
         }
 
         print(res)
-
         ref = db.reference('/')
-        ref.push().set(res)
+        push_ref = ref.push()
+        loop = asyncio.get_event_loop()
+        executor = concurrent.futures.ThreadPoolExecutor()
+        loop.run_in_executor(executor, push_ref.set, res)  # Run set() operation in a separate thread
+
+
 
     def disp_game_info(self):
         disp = {
             "Score": self.player.score,
-            "Time": self.time_survived,
+            "Time": str(int(self.time_survived/1000)) + ' s',
             "Kills": self.player.zombies_killed,
             "Difficulty": self.difficulty,
             "Bullets shot": self.player.bullets_shot,
