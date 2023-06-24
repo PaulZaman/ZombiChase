@@ -3,7 +3,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 
-
 cred_obj = {
   "type": "service_account",
   "project_id": "zombichase-e04ac",
@@ -26,7 +25,3 @@ default_app = firebase_admin.initialize_app(cred, {
 
 # Get a database reference
 ref = db.reference('/')
-
-# Push the data to the database
-#ref.push().set(user_data)
-

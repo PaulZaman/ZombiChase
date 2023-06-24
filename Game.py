@@ -75,8 +75,7 @@ class Game:
     def update(self):
         self.time_survived = pygame.time.get_ticks()
 
-        for sprite in self.sprites:
-            sprite.update()
+        self.sprites.update()
 
         self.map.update()
         
