@@ -1,4 +1,4 @@
-# 🧟‍♀️🧟‍♂️💥 ZombiChase: The Ultimate Survival Game! 💥🧟‍♀️🧟‍♂️
+# 🧟‍♂️💥 ZombiChase: The Ultimate Survival Game! 💥🧟‍♀️
 
 Welcome to ZombiChase, an exhilarating Rogue-like game developed using Python and Pygame. Prepare yourself for an adrenaline-pumping adventure where your main objective is to survive as long as possible against hordes of relentless zombies. Can you beat the odds and emerge as the ultimate survivor? 🏆
 
