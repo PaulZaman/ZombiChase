@@ -61,6 +61,11 @@ To streamline the installation process, we have prepared a requirements file. To
  pip install -r requirements.txt 
  ```
 
+#### 🏆 Database Setup:
+
+To ensure the game's leaderboard functionality works as intended, you will need to connect to our database. To do so, you will need to rename the file "dbSetupEXAMPLE.py" to "dbSetup.py" and replace the placeholder cred_obj with the database credentials we have provided you with. Once you have done so, you will be able to connect to our database and view the leaderboard.
+
+
 #### 2️⃣ Launch the Game:
 Once you have installed dependancies, run the game using the following command:
 
