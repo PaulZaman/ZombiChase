@@ -4,7 +4,8 @@ Welcome to ZombiChase, an exhilarating Rogue-like game developed using Python an
 
 ## 🎮 Gameplay 🎮
 
-[ZombiChase Gameplay](../images/gameplay.mov)
+https://github.com/PaulZaman/ZombiChase/assets/64264952/f2d135a9-ff24-4e8b-a019-7c6518ba2a08
+
 
 ## 🌟 Game Features 🌟
 
