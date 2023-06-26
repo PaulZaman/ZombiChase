@@ -71,7 +71,7 @@ Once you have installed dependancies, run the game using the following command:
 
 ```bash
 python3 main.py
-```
+ ```
 
 🎉 Now it's time to immerse yourself in the heart-pounding action of ZombiChase and test your survival skills against waves of hungry zombies. May the odds be in your favor! 🎉
 
