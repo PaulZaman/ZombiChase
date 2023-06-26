@@ -300,11 +300,11 @@ class Menu:
             time.sleep(0.1)
 
     def filter_highscore(self):
-        
-
-        ref = db.reference('/')  # Replace with the path to your data
-        data = ref.get()
-        if data is None:
+        try:
+            ref = db.reference('/')  # Replace with the path to your data
+            data = ref.get()
+        except:
+            data = None
             self.filtered_data = []
             return
 

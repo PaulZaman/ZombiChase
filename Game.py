@@ -149,7 +149,7 @@ class Game:
                     name = "Player" + str(random.randint(0, 1000))
                 self.back_to_menu = True
                 self.save_to_server(name)
-                print("saved to server")
+                
                 run = False
                 return
 
@@ -181,32 +181,36 @@ class Game:
                         self.save_to_server(name)
                         
     def save_to_server(self, name):
-        ## ici on sauvegarde les résultats, 
-        print("saving to server")
         try:
-            self.weapon_info.pop('image')
+            ## ici on sauvegarde les résultats, 
+            print("saving to server")
+            try:
+                self.weapon_info.pop('image')
+            except:
+                pass
+            
+            res = {
+                "name": name,
+                "weapon_info": self.weapon_info,
+                "time_survived": self.time_survived,
+                "difficulty": self.difficulty,
+                "n_bullets_shot": self.player.bullets_shot,
+                "score": self.player.score,
+                "bullets_missed": self.player.bullets_missed,
+                "zombies_killed": self.player.zombies_killed,
+                "powerups_collected": self.player.powerups_collected
+            }
+
+            print(res)
+            ref = db.reference('/')
+            push_ref = ref.push()
+            loop = asyncio.get_event_loop()
+            executor = concurrent.futures.ThreadPoolExecutor()
+            loop.run_in_executor(executor, push_ref.set, res)  # Run set() operation in a separate thread
+            print("saved to server")
+
         except:
-            pass
-        
-        res = {
-            "name": name,
-            "weapon_info": self.weapon_info,
-            "time_survived": self.time_survived,
-            "difficulty": self.difficulty,
-            "n_bullets_shot": self.player.bullets_shot,
-            "score": self.player.score,
-            "bullets_missed": self.player.bullets_missed,
-            "zombies_killed": self.player.zombies_killed,
-            "powerups_collected": self.player.powerups_collected
-        }
-
-        print(res)
-        ref = db.reference('/')
-        push_ref = ref.push()
-        loop = asyncio.get_event_loop()
-        executor = concurrent.futures.ThreadPoolExecutor()
-        loop.run_in_executor(executor, push_ref.set, res)  # Run set() operation in a separate thread
-
+            print("error saving to server")
 
 
     def disp_game_info(self):

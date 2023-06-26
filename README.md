@@ -264,7 +264,11 @@ We will describe each table, and how they interact with each other.
 | collision_rect                                     | A rectangle used for collision detection |
 | game                                               | An instance of the Game class |
 
-<img width="482" alt="Capture d’écran 2023-06-26 à 15 23 23" src="https://github.com/PaulZaman/ZombiChase/assets/64264952/659f0f49-072d-4983-8a04-551f2e1fee2f">
+
+## Class diagram
+
+
+<img width="full" alt="Capture d’écran 2023-06-26 à 15 23 23" src="https://github.com/PaulZaman/ZombiChase/assets/64264952/659f0f49-072d-4983-8a04-551f2e1fee2f">
 
 
 ## Main execution
