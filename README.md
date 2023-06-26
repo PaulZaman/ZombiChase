@@ -271,50 +271,63 @@ We will describe each table, and how they interact with each other.
 <img width="full" alt="Capture d’écran 2023-06-26 à 15 23 23" src="https://github.com/PaulZaman/ZombiChase/assets/64264952/659f0f49-072d-4983-8a04-551f2e1fee2f">
 
 
-## Main execution
+## 🚀 Main Execution 🚀
 
-Let's got through the main execution of the programm:
+Let's go through the main execution of the program:
 
-1. The **main.py** file is executed, which will create a empty **Window** object. The file then creates a **Menu** object, by mounting it on the **Window**.
+#### 1️⃣ The main.py file is executed, which will create an empty Window object. The file then creates a Menu object by mounting it on the Window.
 
-2. The **Menu** object will then be executed, which navigates through the different menus, and will create a **Game** object when the user clicks on the "Play" button.
+#### 2️⃣ The Menu object will then be executed, which navigates through the different menus and will create a Game object when the user clicks on the "Play" button.
 
-3. The **Game** object will be initialised, so it creates the following objects: **Player**, **Map**, **Zombie**, **Bullet**, **PowerUp**, **Map**, **Tiles**, **Rooms**. It will then start the game loop, which will update the game and draw it on the screen.
+#### 3️⃣ The Game object will be initialized, creating the following objects: Player 🕹️, Map 🗺️, Zombie 🧟, Bullet 🔫, PowerUp ⚡, Tiles 🧱, and Rooms 🏰. It will then start the game loop, updating and drawing the game on the screen.
 
 There are 3 main parts to our game loop:
-- **Events**: This part will handle all the events that are happening in the game, such as the player moving, the player shooting, the player picking up a powerup, etc.
-- **Update**: This part will update the game, such as moving the zombies, moving the bullets, etc.
-- **Draw**: This part will draw the game on the screen, such as drawing the player, the zombies, the bullets, etc.
 
-4. When the player dies, the **Game** object will be destroyed, sending the player back to the menu.
+✨ Events: This part handles all the events happening in the game, such as player movement, shooting, and power-up collection.
 
+✨ Update: This part updates the game, including moving the zombies, bullets, etc.
 
-## Randomly Generated Maps
+✨ Draw: This part draws the game on the screen, displaying the player, zombies, bullets, etc.
 
-In order to generate a random map, when the **Game** object is created we create a **Map** object, which will create a 2D array of **Tiles** objects. Each **Tile** object will have a type, which will be used to draw the map accordingly. Type can be "grass", "wall-br", "wall-bl", "wall-tr", "wall-tl", "wall-h", "wall-v", "inside", "grass-5".
+#### 4️⃣ When the player dies, the Game object will be destroyed, sending the player back to the menu.
 
+## 🌟 Randomly Generated Maps 🌟
 
-The **Map** object will also create a random number of **Rooms** objects, which will be used to generate the rooms. The **Map** object will then create the **Player** object, which will be placed in the top left of the map. 
+To generate a random map, when the Game object is created, we create a Map object. It generates a 2D array of Tiles objects. Each Tile object has a type, used to draw the map accordingly. Types can be "grass" 🌿, "wall-br" 🧱, "wall-bl" 🧱, "wall-tr" 🧱, "wall-tl" 🧱, "wall-h" 🧱, "wall-v" 🧱, "inside" 🪟, "grass-5" 🌿.
 
-The **Map** object will then create a random number of **Zombie** objects, which will be placed in random positions on the map. The **Map** object will then create a random number of **PowerUp** objects, which will be placed in random positions (but in the rooms) on the map.
+The Map object also creates a random number of Rooms objects to generate the rooms. It then places the Player object in the top left of the map. Additionally, it randomly places a number of Zombie objects and PowerUp objects (within the rooms) on the map.
 
 ## 📝 Database 📝
 
-In order to store the highscores of the players, we have created a database using Firebase. The database is hosted on a server online, and each player can access it. The database contains a table called "scores", which contains the following columns:
-- **Name**: The name of the player
-- **Rank**: The rank of the player
-- **Score**: The score of the player
-- **Duration**: The duration of the game of the player
-- **Zombies Killed**: The number of zombies killed by the player
-- **Difficulty**: The difficulty of the game of the player
-- **Bullets Shot**: The number of bullets shot by the player
-- **Weapon Info**: The weapon info of the player
+To store player highscores, we've created a database using Firebase. The database is hosted online, allowing players to access it. The "scores" table in the database contains the following columns:
 
-All these informations are accessible on the highscores page in the menu.
+Name 👤: Player's name
+Rank 🏆: Player's rank
+Score 🎮: Player's score
+Duration ⌛: Game duration
+Zombies Killed 💀: Number of zombies killed
+Difficulty 🌟: Game difficulty
+Bullets Shot 🔫: Number of bullets shot
+Weapon Info 🗡️: Player's weapon information
+All this information is accessible on the highscores page in the menu.
+
+## 📝 Dependencies and Technologies Used 📝
+
+We used Python 🐍 to create this game, along with the pygame library 🎮 for game development. The pyrebase library 🔥 was utilized to connect to the Firebase database. We also made use of the random library 🎲 for generating random numbers and the math library ➕📐 for calculations.
+
+Each element on the screen, such as tiles, players, zombies, and power-ups, is represented as a pygame.sprite. This allows easy movement of elements and collision detection between them.
+
+# Conclusion
+
+ZombiChase is an exhilarating Rogue-like survival game developed using Python and Pygame. The objective of the game is to survive as long as possible against hordes of relentless zombies. The game offers a variety of exciting features, including the ability to choose from three powerful weapons (rifle, shotgun, pistol), intense gameplay with dynamically generated maps, easy controls, and a range of power-ups to enhance your zombie-slaying abilities. 💥🧟‍♂️🔫
+
+The game's randomly generated maps ensure a unique and unpredictable experience with each playthrough. As you progress, the zombies become faster and more aggressive, challenging your survival skills. Compete against other players worldwide and strive for the top spot on the leaderboards. 🗺️🌍🏆
+
+To play ZombiChase, simply follow the installation instructions provided in the project. Once you launch the game, immerse yourself in the heart-pounding action, aim for high scores, and test your survival skills against endless waves of hungry zombies. 🎮🔥🧟‍♂️
+
+The project's code is organized into several main classes, including Menu, Game, Player, Zombie, Bullet, PowerUp, Map, Room, Tiles, and Window. Each class represents a specific aspect of the game and interacts with others to create the overall gameplay experience. 👨‍💻🧟‍♂️🧱
+
+ZombiChase offers an immersive and challenging gaming experience for players who enjoy action-packed survival games. So, gear up, choose your weapon, and get ready to face the zombie apocalypse like never before! 🧟‍♂️⚔️🔥
 
 
-## 📝 Dependencies and Technologies used 📝
-
-We have used **python** to create this game. We used the **pygame** library to create the game, and we used the pyrebase library to connect to the database. We have also used the random library to generate random numbers, and the math library to do some calculations.
-
-Each element you see on the screen is a **pygame.spite** wheather it is a screen tile, or a player, zombi, or powerup. This allows us to easily move the elements on the screen, and to easily detect collisions between elements.
+Enjoy playing the game! Have fun! 🎉🕹️
