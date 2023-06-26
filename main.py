@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from maps.Window import Window
+from menu.Window import Window
 from menu.Menu import Menu
 from settings import *
 

@@ -145,6 +145,8 @@ class Game:
                 
 
             if self.window.button(18.75, 14, 8, 2, "Save Results", GREY, LIGHT_GREY, WHITE, WHITE, TILESIZE=32):
+                if name == "":
+                    name = "Player" + str(random.randint(0, 1000))
                 self.back_to_menu = True
                 self.save_to_server(name)
                 print("saved to server")

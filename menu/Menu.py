@@ -77,7 +77,6 @@ class Menu:
         self.game = Game(self.window, self.game_difficulty, self.weapons[self.selected_weapon_index])
         self.game = None
 
-
     def main_loop(self):
         run = True
         while run:
@@ -289,7 +288,7 @@ class Menu:
             self.window.draw_text(rank_x, y, rank, 18, WHITE, TILESIZE=TILESIZE)
             self.window.draw_text(name_x, y, name, 18, WHITE, TILESIZE=TILESIZE)
             self.window.draw_text(score_x, y, score, 18, WHITE, TILESIZE=TILESIZE)
-            self.window.draw_text(time_x,y, str(int(int(time_survived) /1000))+"s", 18, WHITE, TILESIZE=TILESIZE)
+            self.window.draw_text(time_x,y, str(int(int(float(time_survived)) /1000))+"s", 18, WHITE, TILESIZE=TILESIZE)
             self.window.draw_text(zombies_x, y, zombies_killed, 18, WHITE, TILESIZE=TILESIZE)
             self.window.draw_text(difficulty_x, y, difficulty, 18, WHITE, TILESIZE=TILESIZE)
             self.window.draw_text(bullets_x, y, bullets_shot, 18, WHITE, TILESIZE=TILESIZE)
@@ -305,6 +304,9 @@ class Menu:
 
         ref = db.reference('/')  # Replace with the path to your data
         data = ref.get()
+        if data is None:
+            self.filtered_data = []
+            return
 
         self.filtered_data = []
         keys = deque(data.keys())  # Store the keys in a deque for easy accessfor _ in range(10):
