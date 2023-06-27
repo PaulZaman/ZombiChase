@@ -7,3 +7,4 @@ main.spec
 dbSetup.py
 /menu/__pycache__/
 /__pycache__/
+/myenv/
