@@ -77,6 +77,8 @@ To streamline the installation process, we have prepared all the dependencies in
 
 To ensure the game's leaderboard functionality works as intended, you will need to connect to our database. To do so, you will need to rename the file "dbSetupEXAMPLE.py" to "dbSetup.py" and replace the placeholder cred_obj with the database credentials we have provided you with. Once you have done so, you will be able to connect to our database and view the leaderboard.
 
+Don't worry, if you don't have this "cred_obj", the game will still run without a problem, you will just not be able to post and view highscores.
+
 #### 2️⃣ Launch the Game:
 Once you have installed dependancies, run the game using the following command:
 
