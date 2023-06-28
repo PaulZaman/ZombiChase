@@ -4,8 +4,9 @@ Welcome to ZombiChase, an exhilarating Rogue-like game developed using Python an
 
 You directly download the executable files here:
 
-📥 MAC DOWNLOAD 
-📥 WINDOWS DOWNLOAD
+[![📥 Mac Download](https://img.shields.io/badge/Download-Mac-blue)](https://drive.google.com/uc?export=download&id=18nGnq01BJ8fTjZSM2XB4sG1klPvPOcmw)
+[![📥 Windows Download](https://img.shields.io/badge/Download-Windows-blue)](https://drive.google.com/uc?export=download&id=1EcZHpGgVN85cTmF-7_OwjN8CegzxhYr9)
+
 
 Or you can have fun scrolling through the code as you wish !
 
