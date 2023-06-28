@@ -2,11 +2,11 @@
 
 Welcome to ZombiChase, an exhilarating Rogue-like game developed using Python and Pygame. Prepare yourself for an adrenaline-pumping adventure where your main objective is to survive as long as possible against hordes of relentless zombies. Can you beat the odds and emerge as the ultimate survivor? 🏆
 
-You directly download the executable files here:
 
 <div align="center">
- [![Mac and Linux](https://img.shields.io/badge/Download-Mac-blue)](https://drive.google.com/uc?export=download&id=18nGnq01BJ8fTjZSM2XB4sG1klPvPOcmw)
-[![Windows EXE](https://img.shields.io/badge/Download-Windows-blue)](https://drive.google.com/uc?export=download&id=1EcZHpGgVN85cTmF-7_OwjN8CegzxhYr9)
+You directly download the executable files here:
+
+[![Mac and Linux](https://img.shields.io/badge/Download-Mac-blue)](https://drive.google.com/uc?export=download&id=18nGnq01BJ8fTjZSM2XB4sG1klPvPOcmw) [![Windows EXE](https://img.shields.io/badge/Download-Windows-blue)](https://drive.google.com/uc?export=download&id=1EcZHpGgVN85cTmF-7_OwjN8CegzxhYr9)
 </div>
 
 
